@@ -13,6 +13,14 @@ public class Firebase {
     private DatabaseReference mDatabaseReference;
 
 
+    public Firebase() {
+
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mDatabase.getReference();
+
+    }
+
+
 
 
 }
