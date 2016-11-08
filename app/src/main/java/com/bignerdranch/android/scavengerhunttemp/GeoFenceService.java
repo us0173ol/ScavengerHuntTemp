@@ -13,5 +13,7 @@ import java.util.List;
 /**
  * Created by miked on 11/8/2016.
  */
+public class GeoFenceService  {
 
+}
 
