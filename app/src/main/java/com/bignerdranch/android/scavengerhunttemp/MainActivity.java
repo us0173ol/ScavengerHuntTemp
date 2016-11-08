@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO Create a way for the program to track us (assuming the last step doesn't cover that).
 
-        //TODO Enter some dummie data into Firebase and write code to access and modify it.
+        //TODO Enter some dummy data into Firebase and write code to access and modify it.
 
         //TODO go to a location and have the program confirm we are in the right place.
 
