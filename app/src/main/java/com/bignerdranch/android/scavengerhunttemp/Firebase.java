@@ -6,8 +6,7 @@ package com.bignerdranch.android.scavengerhunttemp;
 
 public class Firebase {
 
-    //comment
-
+    private
 
 
 
