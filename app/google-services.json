@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "361208157550",
+    "firebase_url": "https://scanvengerhunt-42320.firebaseio.com",
+    "project_id": "scanvengerhunt-42320",
+    "storage_bucket": "scanvengerhunt-42320.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361208157550:android:292b4dd3a2819f97",
+        "android_client_info": {
+          "package_name": "com.bignerdranch.android.scavengerhunttemp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361208157550-hhindd38f68m06qkp2efrgk5vgn1be23.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4QTKPg14VPmeKYbKgr2LLCqdFkY_uc_s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

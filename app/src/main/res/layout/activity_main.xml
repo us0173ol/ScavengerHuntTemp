@@ -11,8 +11,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.bignerdranch.android.scavengerhunttemp.MainActivity">
 
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/list_holder"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <ListView
+            android:id="@+id/hunt_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="420dp">
+
+        </ListView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/start_hunt_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:text="@string/start_button"
+        android:layout_below="@+id/list_holder"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 </RelativeLayout>
