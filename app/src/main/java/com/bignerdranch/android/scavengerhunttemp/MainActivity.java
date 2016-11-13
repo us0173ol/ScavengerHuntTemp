@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebase = new Firebase();
 
-        mFirebase.
         mFirebase.getAllScavengerLists();
 
 
