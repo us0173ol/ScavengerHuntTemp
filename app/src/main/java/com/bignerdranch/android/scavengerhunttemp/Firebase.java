@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.google.android.gms.wearable.DataMap.TAG;
+
 /**
  * Created by Brendon on 11/8/16.
  */
@@ -111,9 +113,38 @@ public class Firebase  {
         newHunt.setValue(hunt);
 
     }
+    public void addGeoFenceEvent(String event) { mDatabaseReference.push().setValue(event);}
 
+    interface GeoFenceEventCallback  {
+        public void newGeoFenceEventMessages(ArrayList<ScavengerHunt> messages);
+    }
 
+    public void beNotifiedOfGeoFenceEvents(final GeoFenceEventCallback callback) {
+        Query allEvents = mDatabaseReference;    //get all the data. TODO real app will probably filter somehow.
 
+        allEvents.addValueEventListener(new ValueEventListener() {
+
+            //Will be called every time data is changed - in this app, when new GeoFence message is added.
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<ScavengerHunt> messages = new ArrayList<ScavengerHunt>();
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    //messages.add(ds.getValue(ScavengerHunt.class));
+                    Log.d(TAG, ds.toString());
+                }
+
+                //callback.newGeoFenceEventMessages(messages);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
 
 
