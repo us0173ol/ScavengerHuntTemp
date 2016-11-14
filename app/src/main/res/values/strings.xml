@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">ScavengerHuntTemp</string>
-    <string name="start_button">Start</string>
+    <string name="start_button">Start Hunt</string>
 </resources>
