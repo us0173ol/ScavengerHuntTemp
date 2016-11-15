@@ -50,12 +50,12 @@ public class Firebase  {
 
         Query query = mDatabaseReference.child(Scavenger_Lists_Key);
 
+        mHuntList = new ArrayList();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                mHuntList = new ArrayList();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
@@ -115,6 +115,8 @@ public class Firebase  {
         newHunt.setValue(hunt);
 
     }
+
+
     public void addGeoFenceEvent(String event) { mDatabaseReference.push().setValue(event);}
 
     interface GeoFenceEventCallback  {
