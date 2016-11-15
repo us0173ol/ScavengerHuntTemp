@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -84,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mUserHunt = mLocalStorage.fetchUserHunt();
 
-        //Listen to Firebase database, where GeoFence events are stored
-        Firebase firebase = new Firebase(mLocalStorage);
-        firebase.beNotifiedOfGeoFenceEvents(this);
 
         mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
         mStartButton = (Button) findViewById(R.id.start_hunt_button);
@@ -122,10 +120,8 @@ public class MainActivity extends AppCompatActivity implements
 
                     Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
-
 
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,36 +152,6 @@ public class MainActivity extends AppCompatActivity implements
                             mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
                 }
 
-            }
-        });
-
-    }
-
-
-
-
-
-
-
-    //Callback for GoogleApiClient. If connected to GoogleAPIclient successfully, set up GeoFences.
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected");
-        configureGeoFence();
-    }
-        mStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //figure out what was selected in the list
-
-                //get the ScavengertHunt object that was selected
-
-                //start new activity with the selected ScavengerHunt
-
-                //create an example ScavengerHunt.
-                // Replace the example with actual hunt once list of hunts, obtained from Firebase, is working
-
                 ScavengerHunt hunt = new ScavengerHunt();
 
                 ArrayList<Item> items = new ArrayList<>();
@@ -209,14 +175,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 startActivity(intent);
 
-
-
             }
         });
 
     }
-
-
 
 
 
