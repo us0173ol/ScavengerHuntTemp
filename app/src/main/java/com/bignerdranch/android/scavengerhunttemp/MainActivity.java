@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>, Firebase.GeoFenceEventCallback {
+        ResultCallback<Status>, Firebase.GeoFenceEventCallback, Firebase.huntListnames {
 
     Button mStartButton;
     Button mNewHuntButton;
@@ -82,11 +82,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mHuntList = new ArrayList();
 
-        mHuntList = mFirebase.getAllScavengerLists();
+        mFirebase.getAllScavengerLists(this);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, mHuntList);
-
-        mHuntListView.setAdapter(arrayAdapter);
 
 
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
@@ -245,6 +242,16 @@ public class MainActivity extends AppCompatActivity implements
             //Toast.makeText(this, , Toast.LENGTH_LONG).show();
             Log.d(TAG, message.toString());
         }
+
+    }
+
+
+    @Override
+    public void huntnameList(ArrayList huntNames) {
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, huntNames);
+
+        mHuntListView.setAdapter(arrayAdapter);
 
     }
 }
