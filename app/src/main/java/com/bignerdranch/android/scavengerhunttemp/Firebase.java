@@ -46,27 +46,29 @@ public class Firebase  {
         }
 
 
-    public void getAllScavengerLists() {
+    public ArrayList getAllScavengerLists() {
 
         Query query = mDatabaseReference.child(Scavenger_Lists_Key);
 
+        mHuntList = new ArrayList();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayList arrayList = new ArrayList();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     ScavengerHunt huntClass = ds.getValue(ScavengerHunt.class);
 
-                    arrayList.add(huntClass);
+                    String huntName = huntClass.getHuntName();
+
+                    mHuntList.add(huntName);
 
 
                 }
 
-                Log.d(LIST_TAG, arrayList.toString());
+                Log.d(LIST_TAG, mHuntList.toString());
 
             }
 
@@ -77,7 +79,7 @@ public class Firebase  {
         });
 
 
-        //return mHuntList;
+        return mHuntList;
 
     }
 
@@ -113,6 +115,8 @@ public class Firebase  {
         newHunt.setValue(hunt);
 
     }
+
+
     public void addGeoFenceEvent(String event) { mDatabaseReference.push().setValue(event);}
 
     interface GeoFenceEventCallback  {

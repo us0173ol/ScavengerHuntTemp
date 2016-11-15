@@ -26,6 +26,8 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.firebase.database.Query;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
@@ -37,12 +39,20 @@ public class MainActivity extends AppCompatActivity implements
     ListView mHuntListView;
 
     Firebase mFirebase;
+    GoogleApiClient mGoogleApiClient;
+
 
     ArrayList mHuntList;
 
     private static final String NEW_HUNT_KEY = "new hunt";
+    private static final String TAG = "GEOFENCE";
+
 
     private static final int NEW_HUNT_CODE = 0;
+    int REQUEST_LOCATION_PERMISSION = 0;
+
+
+
 
 
     @Override
@@ -60,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
                     .build();
         }
 
-        //Listen to Firebsase database, where GeoFence events are stored
+        //Listen to Firebase database, where GeoFence events are stored
         Firebase firebase = new Firebase();
         firebase.beNotifiedOfGeoFenceEvents(this);
 
@@ -68,14 +78,15 @@ public class MainActivity extends AppCompatActivity implements
         mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
         mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
 
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text);
-
-        mHuntListView.setAdapter(arrayAdapter);
-
         mFirebase = new Firebase();
 
-        mFirebase.getAllScavengerLists();
+        mHuntList = new ArrayList();
+
+        mHuntList = mFirebase.getAllScavengerLists();
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, mHuntList);
+
+        mHuntListView.setAdapter(arrayAdapter);
 
 
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
@@ -91,10 +102,9 @@ public class MainActivity extends AppCompatActivity implements
         });
 
     }
-    private static final String TAG = "GEOFENCE";
-    GoogleApiClient mGoogleApiClient;
 
-    int REQUEST_LOCATION_PERMISSION = 0;
+
+
 
 
 
