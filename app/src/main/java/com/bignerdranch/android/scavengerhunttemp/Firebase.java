@@ -46,11 +46,17 @@ public class Firebase  {
         }
 
 
-    public ArrayList getAllScavengerLists() {
+    interface huntListnames {
+
+        public void huntnameList(ArrayList huntNames);
+    }
+
+    public void getAllScavengerLists(final huntListnames callback) {
+
 
         Query query = mDatabaseReference.child(Scavenger_Lists_Key);
 
-        mHuntList = new ArrayList();
+        final ArrayList arrayList = new ArrayList();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -63,12 +69,14 @@ public class Firebase  {
 
                     String huntName = huntClass.getHuntName();
 
-                    mHuntList.add(huntName);
+                    arrayList.add(huntName);
 
 
                 }
 
-                Log.d(LIST_TAG, mHuntList.toString());
+                callback.huntnameList(arrayList);
+
+                Log.d(LIST_TAG, arrayList.toString());
 
             }
 
@@ -78,8 +86,6 @@ public class Firebase  {
             }
         });
 
-
-        return mHuntList;
 
     }
 
