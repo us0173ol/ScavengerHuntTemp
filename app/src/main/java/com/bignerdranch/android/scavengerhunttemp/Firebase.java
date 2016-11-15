@@ -49,6 +49,7 @@ public class Firebase  {
         }
 
 
+    // gets all the names of the Hunts.
     interface huntListnames {
 
         public void huntnameList(ArrayList huntNames);
