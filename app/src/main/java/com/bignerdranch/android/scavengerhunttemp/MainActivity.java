@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,6 +27,7 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
@@ -68,14 +70,17 @@ public class MainActivity extends AppCompatActivity implements
         mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
         mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
 
+        mHuntList = new ArrayList();
+        mHuntList = firebase.getAllScavengerLists();
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text);
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, mHuntList);
 
         mHuntListView.setAdapter(arrayAdapter);
 
-        mFirebase = new Firebase();
+        //mFirebase = new Firebase();
 
-        mFirebase.getAllScavengerLists();
+        //mFirebase.getAllScavengerLists();
 
 
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +92,42 @@ public class MainActivity extends AppCompatActivity implements
                 startActivityForResult(intent, NEW_HUNT_CODE);
 
 
+            }
+        });
+
+        mStartButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+
+                //figure out what was selected in the list
+
+                //get the scavenger hunt object that was selected
+
+                //create an example ScavengerHunt
+                //Replace example with actual hunt once list of hunts obtained from Firebase is working
+
+                ScavengerHunt hunt = new ScavengerHunt();
+
+                ArrayList<Item> items = new ArrayList<Item>();
+
+                Item item1 = new Item("IDS Center" , 43, -90.9);
+                Item item2 = new Item("MCTC", 44, -93.9);
+                Item item3 = new Item("Loring Park", 42.4, -90);
+                Item item4 = new Item("Starbucks", 47.4, -92.3);
+
+                items.add(item1);
+                items.add(item2);
+                items.add(item3);
+                items.add(item4);
+
+                hunt.setPlaces(items);
+                hunt.setHuntName("Hunt 1");
+
+                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+
+                intent.putExtra("HUNT", (Parcelable) hunt);   //todo make constant variable for key
+
+                startActivity(intent);
             }
         });
 
@@ -236,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements
             Log.d(TAG, message.toString());
         }
 
+
     }
+
 }
 
