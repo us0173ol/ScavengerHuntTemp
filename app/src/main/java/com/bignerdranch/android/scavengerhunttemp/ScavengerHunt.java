@@ -1,18 +1,37 @@
 package com.bignerdranch.android.scavengerhunttemp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by Brendon on 11/10/16.
  */
 
-public class ScavengerHunt {
+public class ScavengerHunt implements Parcelable {
 
 
     String huntName;
 
     List<Item> places;
 
+
+    protected ScavengerHunt(Parcel in) {
+        huntName = in.readString();
+    }
+
+    public static final Creator<ScavengerHunt> CREATOR = new Creator<ScavengerHunt>() {
+        @Override
+        public ScavengerHunt createFromParcel(Parcel in) {
+            return new ScavengerHunt(in);
+        }
+
+        @Override
+        public ScavengerHunt[] newArray(int size) {
+            return new ScavengerHunt[size];
+        }
+    };
 
     public String getHuntName() {
         return huntName;
@@ -39,5 +58,15 @@ public class ScavengerHunt {
                 "huntName='" + huntName + '\'' +
                 ", places=" + places +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(huntName);
     }
 }
