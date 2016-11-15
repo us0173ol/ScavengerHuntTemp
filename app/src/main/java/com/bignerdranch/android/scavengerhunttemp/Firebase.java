@@ -34,11 +34,14 @@ public class Firebase  {
     private ArrayList mHuntList;
 
     private static final String Scavenger_Lists_Key = "scavenger_hunts";
+    private static final String USER_NAME_KEY = "user_names";
     private static final String LIST_TAG = "ckascbk";
 
+    LocalStorage mLocalStorage;
 
-    public Firebase(){
+    public Firebase(LocalStorage localStorage){
 
+        this.mLocalStorage = localStorage;
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference();
 
@@ -86,6 +89,23 @@ public class Firebase  {
             }
         });
 
+
+    }
+
+    // Creates a new User if none available.
+    public void addNewUser() {
+
+        NewUser newUser = new NewUser();
+
+        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).push();
+        mLocalStorage.writeUsername(databaseReference.getKey());
+
+        newUser.setUserName(mLocalStorage.fetchUsername());
+        newUser.setCurrentHunt("none");
+
+        mLocalStorage.writeUserHunt(newUser.getCurrentHunt());
+
+        databaseReference.setValue(newUser);
 
     }
 

@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class GeoFenceService extends IntentService {
 
+    LocalStorage mLocalStorage;
+
     //TODO check that you've registed this IntentService in AndroidManifest.xml
 
     private static final String TAG = "GeoFenceService";
@@ -29,6 +31,7 @@ public class GeoFenceService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
 
 
         //Log event. For a real app, could save to a Firebase DB?
@@ -66,7 +69,9 @@ public class GeoFenceService extends IntentService {
             String eventMessage = "Device " + transitionString + " GeoFence with tag " + geofence.getRequestId() + " at " + currentTime ;
             // e.g. "Device entered GeoFence with tag MCTC_Geofence at November 8 2016 15.12:12..."
 
-            Firebase firebase = new Firebase();
+            mLocalStorage = new LocalStorage(this);
+
+            Firebase firebase = new Firebase(mLocalStorage);
             firebase.addGeoFenceEvent(eventMessage);   //TODO an object to store more detail about event
 
         }

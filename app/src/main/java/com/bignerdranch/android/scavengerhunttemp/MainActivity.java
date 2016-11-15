@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList mHuntList;
 
+    String mUserName;
+    String mUserHunt;
+
     private static final String NEW_HUNT_KEY = "new hunt";
     private static final String TAG = "GEOFENCE";
 
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
     int REQUEST_LOCATION_PERMISSION = 0;
 
 
+    LocalStorage mLocalStorage;
 
 
 
@@ -70,20 +75,54 @@ public class MainActivity extends AppCompatActivity implements
                     .build();
         }
 
+        mLocalStorage = new LocalStorage(this);
+
+        mFirebase = new Firebase(mLocalStorage);
+
+        mUserName = mLocalStorage.fetchUsername();
+
+        if (mUserName == null) {
+
+            mFirebase.addNewUser();
+
+            mUserName = mLocalStorage.fetchUsername();
+        }
+
+
+        mUserHunt = mLocalStorage.fetchUserHunt();
+
         //Listen to Firebase database, where GeoFence events are stored
-        Firebase firebase = new Firebase();
+        Firebase firebase = new Firebase(mLocalStorage);
         firebase.beNotifiedOfGeoFenceEvents(this);
 
         mStartButton = (Button) findViewById(R.id.start_hunt_button);
         mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
         mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
 
-        mFirebase = new Firebase();
+        //mFirebase = new Firebase(mLocalStorage);
 
         mHuntList = new ArrayList();
 
         mFirebase.getAllScavengerLists(this);
 
+
+        mHuntListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (mUserHunt.equalsIgnoreCase("none")) {
+
+                    String huntSelect = mHuntListView.getItemAtPosition(i).toString();
+
+                    mLocalStorage.writeUserHunt(huntSelect);
+
+                } else {
+
+                    Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
 
 
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +133,26 @@ public class MainActivity extends AppCompatActivity implements
 
                 startActivityForResult(intent, NEW_HUNT_CODE);
 
+
+            }
+        });
+
+
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String huntSelection = mLocalStorage.fetchUserHunt();
+
+                if (huntSelection.equalsIgnoreCase("none")) {
+
+                    Toast.makeText(MainActivity.this, "You need to select a Scavenger Hunt.", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(MainActivity.this, "Thank you" + " " +
+                            mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
+                }
 
             }
         });

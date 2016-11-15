@@ -13,6 +13,7 @@ public class ScavengerHunt {
 
     List<Item> places;
 
+
     public String getHuntName() {
         return huntName;
     }
