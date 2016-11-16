@@ -32,7 +32,7 @@ import com.google.firebase.database.Query;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
-     Firebase.huntListnames {
+     Firebase.huntListnames, Firebase.getUserHuntList {
 
     Button mStartButton;
     Button mNewHuntButton;
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+
                 if (mUserHunt.equalsIgnoreCase("none")) {
 
                     String huntSelect = mHuntListView.getItemAtPosition(i).toString();
@@ -123,10 +124,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 } else {
 
-                    String huntSelect = mHuntListView.getItemAtPosition(i).toString();
-
                     Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
-                    mFirebase.updateUserHunt(huntSelect);
 
                 }
             }
@@ -159,10 +157,19 @@ public class MainActivity extends AppCompatActivity implements
 
                 } else {
 
+                    ArrayList places = new ArrayList();
+
+                    /*
+                    The goal here is to search the scavenger hunt lists and retrieve all the places
+                    as an arraylist so that we can iterate over it and copy it to the User list.
+                     */
+                    mFirebase.getUserHunts(MainActivity.this);
+
                     Toast.makeText(MainActivity.this, "Thank you" + " " +
                             mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
                 }
 
+                /*
                 ScavengerHunt hunt = new ScavengerHunt();
 
                 ArrayList<Item> items = new ArrayList<>();
@@ -185,11 +192,13 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtra("HUNT", hunt);   //todo make constant variable for key
 
                 startActivity(intent);
+                */
 
             }
         });
 
     }
+
 
 
 
@@ -199,6 +208,14 @@ public class MainActivity extends AppCompatActivity implements
         ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, huntNames);
 
         mHuntListView.setAdapter(arrayAdapter);
+
+    }
+
+    @Override
+    public void huntList(ArrayList huntNames) {
+
+
+        Toast.makeText(this, huntNames.toString(), Toast.LENGTH_LONG).show();
 
     }
 }

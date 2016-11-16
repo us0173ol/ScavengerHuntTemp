@@ -11,4 +11,34 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.bignerdranch.android.scavengerhunttemp.ActiveHuntActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_hunt_viewer"
+        android:padding="10dp"
+        android:layout_below="@+id/hunt_header"
+        android:layout_above="@+id/hunt_footer">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/user_hunt_list"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/hunt_footer"
+        android:layout_alignParentBottom="true">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/hunt_header"
+        android:layout_height="75dp"
+        android:padding="10dp"
+        android:layout_alignParentTop="true">
+
+    </RelativeLayout>
 </RelativeLayout>

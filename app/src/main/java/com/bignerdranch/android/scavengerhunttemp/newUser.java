@@ -8,6 +8,7 @@ public class NewUser {
 
     String userName;
     String currentHunt;
+    double userScore;
 
 
     public String getUserName() {
@@ -26,11 +27,20 @@ public class NewUser {
         this.currentHunt = currentHunt;
     }
 
+    public double getUserScore() {
+        return userScore;
+    }
+
+    public void setUserScore(double userScore) {
+        this.userScore = userScore;
+    }
+
+
     @Override
     public String toString() {
-        return "newUser{" +
-                "userName='" + userName + '\'' +
-                ", currentHunt='" + currentHunt + '\'' +
+        return "NewUser{" +
+                "currentHunt='" + currentHunt + '\'' +
+                ", userScore=" + userScore +
                 '}';
     }
 }
