@@ -65,16 +65,20 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Configure GoogleApiClient. Look at the onConnectionListener for the next part of the app logic
-        //GoogleApiClient includes LocationServices, and LocationServices is used to monitor GeoFences.
 
+
+        mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
+        mStartButton = (Button) findViewById(R.id.start_hunt_button);
+        mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
+        mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
 
         mLocalStorage = new LocalStorage(this);
 
         mFirebase = new Firebase(mLocalStorage);
 
-        mUserName = mLocalStorage.fetchUsername();
+        mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
 
+        // If one doesn't exist this will create it.
         if (mUserName == null) {
 
             mFirebase.addNewUser();
@@ -86,23 +90,21 @@ public class MainActivity extends AppCompatActivity implements
         mUserHunt = mLocalStorage.fetchUserHunt();
 
 
-        mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
-        mStartButton = (Button) findViewById(R.id.start_hunt_button);
-        mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
-        mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
-
-        //mFirebase = new Firebase(mLocalStorage);
-
         mHuntList = new ArrayList();
 
         mFirebase.getAllScavengerLists(this);
 
+
+        // Works with current hunt if one exists.
         mLaunchActiveHuntScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
 
-                startActivityForResult(intent, ACTIVE_HUNT_CODE);
+                String userSelection = mLocalStorage.fetchUserHunt();
+
+                //Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+
+                //startActivityForResult(intent, ACTIVE_HUNT_CODE);
             }
         });
 
@@ -116,13 +118,22 @@ public class MainActivity extends AppCompatActivity implements
 
                     mLocalStorage.writeUserHunt(huntSelect);
 
+                    mFirebase.updateUserHunt(huntSelect);
+
+
                 } else {
 
+                    String huntSelect = mHuntListView.getItemAtPosition(i).toString();
+
                     Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
+                    mFirebase.updateUserHunt(huntSelect);
+
                 }
             }
         });
 
+
+        // Allows for the creation of a new hunt.
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

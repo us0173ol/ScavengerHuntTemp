@@ -110,6 +110,21 @@ public class Firebase  {
 
     }
 
+    public void updateUserHunt(String hunt) {
+
+
+        String userName = mLocalStorage.fetchUsername();
+
+        DatabaseReference databaseReference = mDatabaseReference.child(userName);
+
+        HashMap<String, Object> updateHunt = new HashMap<String,Object>();
+
+        updateHunt.put("currentHunt", hunt);
+
+        databaseReference.updateChildren(updateHunt);
+
+    }
+
 
 
     //This takes the HashMap of locations and add them to the database as a new Hunt.

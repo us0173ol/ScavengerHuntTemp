@@ -70,6 +70,10 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         //if user finds all places, do something special
         //Callback for GoogleApiClient. If connected to GoogleAPIclient successfully, set up GeoFences.
     }
+
+
+
+
         @Override
         public void onConnected (@Nullable Bundle bundle){
             Log.d(TAG, "onConnected");
