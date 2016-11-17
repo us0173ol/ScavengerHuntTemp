@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
     LocalStorage mLocalStorage;
 
 
+    NewUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +77,15 @@ public class MainActivity extends AppCompatActivity implements
 
         mFirebase = new Firebase(mLocalStorage);
 
-        mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
+        mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage //todo deal with user objects
 
         // If one doesn't exist this will create it.
         if (mUserName == null) {
+            mUser = new NewUser();
+            mUser.setUserScore(0);
+            //newUser.setCurrentHunt("none");   //don't need this. currentHunt will be null if you don't define it.  Use null for things that don't exist.
 
-            mFirebase.addNewUser();
+            mFirebase.addNewUser(mUser);
 
             mUserName = mLocalStorage.fetchUsername();
         }
@@ -113,20 +117,26 @@ public class MainActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                if (mUserHunt.equalsIgnoreCase("none")) {
+                //if (mUserHunt.equalsIgnoreCase("none")) {
 
                     String huntSelect = mHuntListView.getItemAtPosition(i).toString();
 
+                    ScavengerHunt hunt = (ScavengerHunt)mHuntListView.getItemAtPosition(i);
+
                     mLocalStorage.writeUserHunt(huntSelect);
 
-                    mFirebase.updateUserHunt(huntSelect);
+                    Log.d(TAG, "Name of hunt selected " + huntSelect);
+
+                    //Copy hunt to user
+
+                    mFirebase.updateUserHunt(mUser, hunt);
 
 
-                } else {
-
-                    Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
-
-                }
+//                } else {
+//
+//                    Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
+//
+//                }
             }
         });
 
@@ -203,9 +213,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
     @Override
-    public void huntnameList(ArrayList huntNames) {
+    public void huntnameList(ArrayList<ScavengerHunt> huntNames) {
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, huntNames);
+        ArrayAdapter<ScavengerHunt> arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, huntNames);
 
         mHuntListView.setAdapter(arrayAdapter);
 
