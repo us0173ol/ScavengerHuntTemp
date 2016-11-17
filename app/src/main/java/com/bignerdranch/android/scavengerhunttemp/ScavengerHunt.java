@@ -16,8 +16,10 @@ public class ScavengerHunt implements Parcelable {
 
     List<Item> places;
 
+
     protected ScavengerHunt(Parcel in) {
         huntName = in.readString();
+        places = in.createTypedArrayList(Item.CREATOR);
     }
 
     public static final Creator<ScavengerHunt> CREATOR = new Creator<ScavengerHunt>() {
@@ -59,6 +61,7 @@ public class ScavengerHunt implements Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,5 +70,6 @@ public class ScavengerHunt implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(huntName);
+        parcel.writeTypedList(places);
     }
 }

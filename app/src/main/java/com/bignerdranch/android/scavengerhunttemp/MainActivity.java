@@ -129,16 +129,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 startActivity(intent);
 
-
-
             }
         });
 
     }
-
-
-
-
 
     @Override
     public void huntnameList(ArrayList huntNames) {

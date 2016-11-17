@@ -20,7 +20,7 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class ActiveHuntActivity extends AppCompatActivity implements
@@ -34,6 +34,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
     private static final String TAG = "Active hunt activity";
 
+    List<Item> mItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 //        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
         Intent launchIntent = getIntent();
         ScavengerHunt hunt = launchIntent.getParcelableExtra("HUNT");
+
+        mItems = hunt.getPlaces();
 
         Log.d(TAG, hunt.toString());
         if (mGoogleApiClient == null) {
@@ -55,6 +59,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         //Listen to Firebase database, where GeoFence events are stored
         Firebase firebase = new Firebase();
         firebase.beNotifiedOfGeoFenceEvents(this);
+
+
 
         //set up geofences
 
@@ -70,8 +76,20 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         @Override
         public void onConnected (@Nullable Bundle bundle){
             Log.d(TAG, "onConnected");
-            configureGeoFence();
+            {
+             configureGeoFences();
+            }
+            //configureGeoFence();
         }
+    private void configureGeoFences(){
+        //configure geofence with uniqueID tag
+        //configuredGeoFence(45, -90, 100, uniquetag)
+        String uniqueTag = "";
+        for(Item item: mItems ){
+                Log.d(TAG, "Item? " + item);
+
+        }
+    }
 
 
         //Callback for GoogleApiClient
@@ -99,15 +117,15 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     }
 
 
-    private void configureGeoFence() {
+    private void configureGeoFence(double lat, double lon, float radius, String tag) {
         //Create a new GeoFence. Configure the GeoFence using a Builder. See documentation for setting options
         //Can create many GeoFences, differentiate by the requestId String. The lat+lon could be replaced with user input.
         Geofence geoFence = new Geofence.Builder()
-                .setRequestId("mctc_geofence")    //identifies your GeoFence, put a unique String here
+                .setRequestId(tag)    //identifies your GeoFence, put a unique String here
                 .setCircularRegion(
-                        44.973098,    	// latitude of MCTC
-                        -93.282692,     // longitude of MCTC
-                        1000                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
+                        lat,    	// latitude of MCTC
+                        lon,     // longitude of MCTC
+                        radius                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
                 )
                 .setExpirationDuration(60 * 60 * 1000)      //Valid for an hour
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)  // Want to be notified when user enters and exits the GeoFence
@@ -185,7 +203,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                configureGeoFence();
+                configureGeoFences();
             }
         }
 
