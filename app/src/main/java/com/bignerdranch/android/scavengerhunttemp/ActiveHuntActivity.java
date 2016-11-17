@@ -29,6 +29,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
+    LocalStorage mLocalStorage;
 
     int REQUEST_LOCATION_PERMISSION = 0;
 
@@ -40,6 +41,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_hunt);
+
+        mLocalStorage = new LocalStorage(this);
 
 //        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
         Intent launchIntent = getIntent();
@@ -57,7 +60,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         }
 
         //Listen to Firebase database, where GeoFence events are stored
-        Firebase firebase = new Firebase();
+        Firebase firebase = new Firebase(mLocalStorage);
         firebase.beNotifiedOfGeoFenceEvents(this);
 
 
@@ -73,6 +76,10 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         //if user finds all places, do something special
         //Callback for GoogleApiClient. If connected to GoogleAPIclient successfully, set up GeoFences.
     }
+
+
+
+
         @Override
         public void onConnected (@Nullable Bundle bundle){
             Log.d(TAG, "onConnected");

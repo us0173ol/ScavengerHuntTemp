@@ -36,6 +36,8 @@ public class HuntEntryScreen extends AppCompatActivity {
 
     Firebase mFirebase;
 
+    LocalStorage mLocalStorage;
+
     HashMap<String, String> mAddressCollections;
     HashMap<String, ArrayList> mAddressCollectionLatLon;
 
@@ -61,7 +63,9 @@ public class HuntEntryScreen extends AppCompatActivity {
         mNextTitle = (TextView) findViewById(R.id.next_button_title);
         mCreateTitle = (TextView) findViewById(R.id.create_hunt_title);
 
-        mFirebase = new Firebase();
+        mLocalStorage = new LocalStorage(this);
+
+        mFirebase = new Firebase(mLocalStorage);
 
         mAddressCollections = new HashMap<String, String>();
         mAddressCollectionLatLon = new HashMap<String, ArrayList>();

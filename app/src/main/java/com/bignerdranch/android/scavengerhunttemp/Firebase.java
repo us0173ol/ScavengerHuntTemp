@@ -3,6 +3,7 @@ package com.bignerdranch.android.scavengerhunttemp;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.vision.barcode.Barcode;
@@ -15,8 +16,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import static com.google.android.gms.wearable.DataMap.TAG;
 
@@ -34,11 +38,16 @@ public class Firebase  {
     private ArrayList mHuntList;
 
     private static final String Scavenger_Lists_Key = "scavenger_hunts";
+    private static final String USER_NAME_KEY = "user_names";
     private static final String LIST_TAG = "ckascbk";
 
+    private String mUserHuntKey;
 
-    public Firebase(){
+    LocalStorage mLocalStorage;
 
+    public Firebase(LocalStorage localStorage){
+
+        this.mLocalStorage = localStorage;
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference();
 
@@ -46,7 +55,86 @@ public class Firebase  {
         }
 
 
+    interface getUserHuntList{
 
+        public void huntList(ArrayList huntNames);
+
+    }
+
+    // Searches for and returns a list of all the places for the User hunt selection.
+
+    //TODO this isn't working, we need a way to search through the scanvanger hunt and
+    // TODO pull based on the hunt name, the problem is no data has been changed.
+    public void getUserHunts(final getUserHuntList callback ) {
+
+        Query query = mDatabaseReference.child(Scavenger_Lists_Key);
+
+
+        final ArrayList places = new ArrayList();
+
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
+
+                    String huntName = scavengerHunt.getHuntName();
+
+
+                    if (huntName.equalsIgnoreCase(mLocalStorage.fetchUserHunt())) {
+
+                        mUserHuntKey = ds.getKey();
+
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Query query2 = mDatabaseReference.child(Scavenger_Lists_Key).child(mUserHuntKey);
+
+        query2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
+
+                    List huntPlaces = scavengerHunt.getPlaces();
+
+                    places.add(huntPlaces);
+
+
+                }
+
+                callback.huntList(places);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+
+    // gets all the names of the Hunts..
     interface huntListnames {
 
         public void huntnameList(ArrayList huntNames);
@@ -89,6 +177,37 @@ public class Firebase  {
 
 
     }
+
+    // Creates a new User if none available.
+    public void addNewUser() {
+
+        NewUser newUser = new NewUser();
+
+        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).push();
+        mLocalStorage.writeUsername(databaseReference.getKey());
+
+        newUser.setUserScore(0);
+        newUser.setCurrentHunt("none");
+
+        mLocalStorage.writeUserHunt(newUser.getCurrentHunt());
+
+        databaseReference.setValue(newUser);
+
+    }
+
+    // Updates the current User hunt.
+    public void updateUserHunt(String hunt) {
+
+
+        String userName = mLocalStorage.fetchUsername();
+
+        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("currentHunt");
+
+        databaseReference.setValue(hunt);
+
+    }
+
+
 
 
 

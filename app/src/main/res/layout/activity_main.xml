@@ -15,8 +15,10 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/list_holder">
+        android:layout_below="@+id/list_holder"
+        android:id="@+id/frame_footeer"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/start_hunt_button"

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -31,7 +32,7 @@ import com.google.firebase.database.Query;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
-     Firebase.huntListnames {
+     Firebase.huntListnames, Firebase.getUserHuntList {
 
     Button mStartButton;
     Button mNewHuntButton;
@@ -44,20 +45,26 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList mHuntList;
 
+    String mUserName;
+    String mUserHunt;
+
     private static final String NEW_HUNT_KEY = "new hunt";
     private static final String TAG = "GEOFENCE";
 
 
     private static final int NEW_HUNT_CODE = 0;
     private static final int ACTIVE_HUNT_CODE = 1;
+    int REQUEST_LOCATION_PERMISSION = 0;
+
+
+    LocalStorage mLocalStorage;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Configure GoogleApiClient. Look at the onConnectionListener for the next part of the app logic
-        //GoogleApiClient includes LocationServices, and LocationServices is used to monitor GeoFences.
 
 
         mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
@@ -65,22 +72,66 @@ public class MainActivity extends AppCompatActivity implements
         mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
         mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
 
-        mFirebase = new Firebase();
+        mLocalStorage = new LocalStorage(this);
+
+        mFirebase = new Firebase(mLocalStorage);
+
+        mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
+
+        // If one doesn't exist this will create it.
+        if (mUserName == null) {
+
+            mFirebase.addNewUser();
+
+            mUserName = mLocalStorage.fetchUsername();
+        }
+
+
+        mUserHunt = mLocalStorage.fetchUserHunt();
+
 
         mHuntList = new ArrayList();
 
         mFirebase.getAllScavengerLists(this);
 
+
+        // Works with current hunt if one exists.
         mLaunchActiveHuntScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
 
-                startActivityForResult(intent, ACTIVE_HUNT_CODE);
+                String userSelection = mLocalStorage.fetchUserHunt();
+
+                //Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+
+                //startActivityForResult(intent, ACTIVE_HUNT_CODE);
+            }
+        });
+
+        mHuntListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                if (mUserHunt.equalsIgnoreCase("none")) {
+
+                    String huntSelect = mHuntListView.getItemAtPosition(i).toString();
+
+                    mLocalStorage.writeUserHunt(huntSelect);
+
+                    mFirebase.updateUserHunt(huntSelect);
+
+
+                } else {
+
+                    Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress", Toast.LENGTH_LONG).show();
+
+                }
             }
         });
 
 
+        // Allows for the creation of a new hunt.
         mNewHuntButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,19 +144,32 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //figure out what was selected in the list
+                String huntSelection = mLocalStorage.fetchUserHunt();
 
-                //get the ScavengertHunt object that was selected
+                if (huntSelection.equalsIgnoreCase("none")) {
 
-                //start new activity with the selected ScavengerHunt
+                    Toast.makeText(MainActivity.this, "You need to select a Scavenger Hunt.", Toast.LENGTH_SHORT).show();
 
-                //create an example ScavengerHunt.
-                // Replace the example with actual hunt once list of hunts, obtained from Firebase, is working
+                } else {
 
+                    ArrayList places = new ArrayList();
+
+                    /*
+                    The goal here is to search the scavenger hunt lists and retrieve all the places
+                    as an arraylist so that we can iterate over it and copy it to the User list.
+                     */
+                    mFirebase.getUserHunts(MainActivity.this);
+
+                    Toast.makeText(MainActivity.this, "Thank you" + " " +
+                            mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
+                }
+
+                /*
                 ScavengerHunt hunt = new ScavengerHunt();
 
                 ArrayList<Item> items = new ArrayList<>();
@@ -128,11 +192,16 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtra("HUNT", hunt);   //todo make constant variable for key
 
                 startActivity(intent);
+                */
+
 
             }
         });
 
     }
+
+
+
 
     @Override
     public void huntnameList(ArrayList huntNames) {
@@ -140,6 +209,14 @@ public class MainActivity extends AppCompatActivity implements
         ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, huntNames);
 
         mHuntListView.setAdapter(arrayAdapter);
+
+    }
+
+    @Override
+    public void huntList(ArrayList huntNames) {
+
+
+        Toast.makeText(this, huntNames.toString(), Toast.LENGTH_LONG).show();
 
     }
 }
