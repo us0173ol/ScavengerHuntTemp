@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class ActiveHuntActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>, Firebase.GeoFenceEventCallback{
+        ResultCallback<Status>, Firebase.GeoFenceEventCallback, Firebase.getUserHuntList {
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
@@ -54,8 +55,13 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
 
         mLocalStorage = new LocalStorage(this);
+        mFirebase = new Firebase(mLocalStorage);
 
-//        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
+        mFirebase.getUserHunts(this);
+
+
+        /*
+        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
         Intent launchIntent = getIntent();
         ScavengerHunt hunt = launchIntent.getParcelableExtra("HUNT");
 
@@ -75,6 +81,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         firebase.beNotifiedOfGeoFenceEvents(this);
 
 
+
+        */
 
         //set up geofences
 
@@ -255,5 +263,11 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         }
 
     }
+
+    @Override
+    public void huntList(ArrayList huntNames) {
+
+        Toast.makeText(this, huntNames.toString(), Toast.LENGTH_LONG).show();
     }
+}
 
