@@ -57,7 +57,7 @@ public class Firebase  {
 
     interface getUserHuntList{
 
-        public void huntList(ArrayList huntNames);
+        public void huntList(ArrayList<ScavengerHunt> huntNames);
 
     }
 
@@ -67,10 +67,12 @@ public class Firebase  {
     // TODO pull based on the hunt name, the problem is no data has been changed.
     public void getUserHunts(final getUserHuntList callback ) {
 
-        Query query = mDatabaseReference.child(Scavenger_Lists_Key);
+        String userName = mLocalStorage.fetchUsername();
+
+        Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName);
 
 
-        final ArrayList places = new ArrayList();
+        final ArrayList<ScavengerHunt> places = new ArrayList();
 
 
         query.addValueEventListener(new ValueEventListener() {
@@ -81,40 +83,7 @@ public class Firebase  {
 
                     ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
 
-                    String huntName = scavengerHunt.getHuntName();
-
-
-                    if (huntName.equalsIgnoreCase(mLocalStorage.fetchUserHunt())) {
-
-                        mUserHuntKey = ds.getKey();
-
-                    }
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        Query query2 = mDatabaseReference.child(Scavenger_Lists_Key).child(mUserHuntKey);
-
-        query2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
-
-                    List huntPlaces = scavengerHunt.getPlaces();
-
-                    places.add(huntPlaces);
-
+                    places.add(scavengerHunt);
 
                 }
 
@@ -131,13 +100,17 @@ public class Firebase  {
 
 
 
+
+
+
+
     }
 
 
     // gets all the names of the Hunts..
     interface huntListnames {
 
-        public void huntnameList(ArrayList huntNames);
+        public void huntnameList(ArrayList<ScavengerHunt> huntNames);
     }
 
     public void getAllScavengerLists(final huntListnames callback) {
@@ -145,7 +118,7 @@ public class Firebase  {
 
         Query query = mDatabaseReference.child(Scavenger_Lists_Key);
 
-        final ArrayList arrayList = new ArrayList();
+        final ArrayList<ScavengerHunt> arrayList = new ArrayList();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -156,9 +129,9 @@ public class Firebase  {
 
                     ScavengerHunt huntClass = ds.getValue(ScavengerHunt.class);
 
-                    String huntName = huntClass.getHuntName();
+                    //String huntName = huntClass.getHuntName();
 
-                    arrayList.add(huntName);
+                    arrayList.add(huntClass);
 
 
                 }
@@ -178,16 +151,17 @@ public class Firebase  {
 
     }
 
-    // Creates a new User if none available.
-    public void addNewUser() {
 
-        NewUser newUser = new NewUser();
+    // Creates a new User if none available.
+    public void addNewUser(NewUser newUser) {
+
+       // NewUser newUser = new NewUser();
 
         DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).push();
         mLocalStorage.writeUsername(databaseReference.getKey());
 
-        newUser.setUserScore(0);
-        newUser.setCurrentHunt("none");
+        //newUser.setUserScore(0);
+        //newUser.setCurrentHunt("none");
 
         mLocalStorage.writeUserHunt(newUser.getCurrentHunt());
 
@@ -196,14 +170,17 @@ public class Firebase  {
     }
 
     // Updates the current User hunt.
-    public void updateUserHunt(String hunt) {
+    public void updateUserHunt(NewUser user, ScavengerHunt hunt) {
 
+        user.mScavengerHunt = hunt;
 
         String userName = mLocalStorage.fetchUsername();
 
-        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("currentHunt");
+        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).child(userName);
 
-        databaseReference.setValue(hunt);
+        databaseReference.setValue(user);
+
+        //databaseReference.setValue(hunt);
 
     }
 

@@ -10,6 +10,9 @@ public class NewUser {
     String currentHunt;
     double userScore;
 
+    ScavengerHunt mScavengerHunt;
+
+    NewUser() {}
 
     public String getUserName() {
         return userName;
