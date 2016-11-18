@@ -1,6 +1,7 @@
 package com.bignerdranch.android.scavengerhunttemp;
 
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -10,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,6 +21,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,9 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     GoogleApiClient mGoogleApiClient;
     LocalStorage mLocalStorage;
 
+    protected ArrayList<Geofence> mGeofenceArrayList;
+    private Button mAddGeofencesButton;
+
     int REQUEST_LOCATION_PERMISSION = 0;
 
     private static final String TAG = "Active hunt activity";
@@ -41,6 +48,10 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_hunt);
+        mAddGeofencesButton = (Button)findViewById(R.id.add_geofences_button);
+
+        mGeofenceArrayList = new ArrayList<Geofence>();
+
 
         mLocalStorage = new LocalStorage(this);
 
@@ -81,22 +92,29 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
 
         @Override
-        public void onConnected (@Nullable Bundle bundle){
+        public void onConnected (@Nullable Bundle bundle) {
             Log.d(TAG, "onConnected");
             {
-             configureGeoFences();
+                //configureGeoFences();
             }
-            //configureGeoFence();
+            for (Item item : mItems) {
+                String tag = item.getPlaceName();
+                double lat = item.getLat();
+                double lon = item.getLon();
+                float radius = 500;
+                configureGeoFence(lat, lon, radius, tag);
+            }
         }
-    private void configureGeoFences(){
-        //configure geofence with uniqueID tag
-        //configuredGeoFence(45, -90, 100, uniquetag)
-        String uniqueTag = "";
-        for(Item item: mItems ){
-                Log.d(TAG, "Item? " + item);
-
-        }
-    }
+//    private void configureGeoFences(){
+//        //configure geofence with uniqueID tag
+//        //configuredGeoFence(45, -90, 100, uniquetag)
+//        String uniqueTag = "";
+//        for(Item item: mItems ){
+//                Log.d(TAG, "Item? " + item);
+//                uniqueTag = item.getPlaceName()+item.getLat();
+//
+//        }
+//    }
 
 
         //Callback for GoogleApiClient
@@ -127,6 +145,14 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     private void configureGeoFence(double lat, double lon, float radius, String tag) {
         //Create a new GeoFence. Configure the GeoFence using a Builder. See documentation for setting options
         //Can create many GeoFences, differentiate by the requestId String. The lat+lon could be replaced with user input.
+        for(Item item : mItems){
+            tag = item.getPlaceName();
+            lat = item.getLat();
+            lon = item.getLon();
+            radius = 500;
+            Toast.makeText(this, "Items found?", Toast.LENGTH_LONG).show();
+        }
+
         Geofence geoFence = new Geofence.Builder()
                 .setRequestId(tag)    //identifies your GeoFence, put a unique String here
                 .setCircularRegion(
@@ -210,7 +236,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                configureGeoFences();
+                //configureGeoFence();
             }
         }
 

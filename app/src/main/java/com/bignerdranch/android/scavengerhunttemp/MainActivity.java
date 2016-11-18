@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity implements
 
                 String userSelection = mLocalStorage.fetchUserHunt();
 
-                //Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
 
-                //startActivityForResult(intent, ACTIVE_HUNT_CODE);
+                startActivityForResult(intent, ACTIVE_HUNT_CODE);
             }
         });
 
