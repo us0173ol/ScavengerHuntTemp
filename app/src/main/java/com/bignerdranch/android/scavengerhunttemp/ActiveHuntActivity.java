@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -21,30 +23,60 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ActiveHuntActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>, Firebase.GeoFenceEventCallback, Firebase.getUserHuntList {
+        ResultCallback<Status>, Firebase.GeoFenceEventCallback {
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
     LocalStorage mLocalStorage;
 
+    HashMap mUserHuntInfo;
+
     int REQUEST_LOCATION_PERMISSION = 0;
 
     private static final String TAG = "Active hunt activity";
+
+    ListView mUserListView;
+    Button mUserDeleteButton;
+    Button mUserCheatButton;
+
+    private List<Item> mUserPlaceData;
+    private String mHuntName;
+    private int mHuntScore;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_hunt);
 
+        mUserListView = (ListView) findViewById(R.id.user_hunt_list);
+        mUserDeleteButton = (Button) findViewById(R.id.delete_hunt);
+        mUserCheatButton = (Button) findViewById(R.id.cheat_button);
+
+
         mLocalStorage = new LocalStorage(this);
         mFirebase = new Firebase(mLocalStorage);
 
-        mFirebase.getUserHunts(this);
+        mUserHuntInfo = new HashMap();
+
+        Intent intent = getIntent();
+
+        mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap"); //TODO iterate over this and pull the information out.
+
+
+
+
+
+
 
 
         /*
@@ -220,10 +252,6 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void huntList(ArrayList huntNames) {
 
-        Toast.makeText(this, huntNames.toString(), Toast.LENGTH_LONG).show();
-    }
 }
 

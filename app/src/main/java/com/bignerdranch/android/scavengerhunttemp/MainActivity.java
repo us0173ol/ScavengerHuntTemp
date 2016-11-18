@@ -30,6 +30,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
      Firebase.huntListnames, Firebase.getUserHuntList {
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList mHuntList;
     ArrayList<ScavengerHunt> mScavengerHuntArrayList;
-    ArrayList<ScavengerHunt> mUserHuntList;
+    HashMap mUserHuntList;
 
     String mUserName;
     String mUserHunt;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int NEW_HUNT_CODE = 0;
     private static final int ACTIVE_HUNT_CODE = 1;
     int REQUEST_LOCATION_PERMISSION = 0;
+
 
 
     LocalStorage mLocalStorage;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mFirebase.getAllScavengerLists(this);
 
-        //mFirebase.getUserHunts(this);
+
 
 
         // Works with current hunt if one exists.
@@ -118,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements
                 //startActivityForResult(intent, ACTIVE_HUNT_CODE);
             }
         });
+
+
 
         // Changes the current hunt the User is on, Currently there is no way to stop the User from selecting any hunt they want.
         mHuntListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -134,9 +139,15 @@ public class MainActivity extends AppCompatActivity implements
 
                     String name = huntSelect.getHuntName();
 
+                    List<Item> places = huntSelect.getPlaces();
+
+
                     if (name.equalsIgnoreCase(hunt)) {
 
                         mLocalStorage.writeUserHunt(name);
+
+                        updateUserCurrentHunt(name, places);
+
 
                         if (mNewUser == null) {
 
@@ -152,12 +163,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
                 }
-
-               // String huntSelect = hunt.getHuntName();
-
-                //mLocalStorage.writeUserHunt(huntSelect);
-
-                //mFirebase.updateUserHunt(mNewUser, hunt);
 
 
                 Toast.makeText(MainActivity.this, "Sorry, you already have a hunt in progress.", Toast.LENGTH_LONG).show();
@@ -185,24 +190,21 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+                getCurrentUserHunt();
+
                 String huntSelection = mLocalStorage.fetchUserHunt();
 
-                if (huntSelection.equalsIgnoreCase("none")) {
+                if (huntSelection == null) {
 
                     Toast.makeText(MainActivity.this, "You need to select a Scavenger Hunt.", Toast.LENGTH_SHORT).show();
 
                 } else {
 
-                    //ArrayList places = new ArrayList();
+                    Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+                    intent.putExtra("hashMap", mUserHuntList);
 
-                    /*
-                    The goal here is to search the scavenger hunt lists and retrieve all the places
-                    as an arraylist so that we can iterate over it and copy it to the User list.
-                     */
-                    //mFirebase.getUserHunts(MainActivity.this);
+                    startActivityForResult(intent, ACTIVE_HUNT_CODE);
 
-                    Toast.makeText(MainActivity.this, "Thank you" + " " +
-                            mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
                 }
 
                 /*
@@ -224,16 +226,68 @@ public class MainActivity extends AppCompatActivity implements
                 hunt.setHuntName("Hunt 1");
                 */
 
-                //TODO start the activity with the
-                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
 
                 //intent.putExtra("HUNT", hunt);   //todo make constant variable for key
 
-                startActivity(intent);
 
 
             }
         });
+
+    }
+
+    // Saves user selection data localy so that it can be passed to activity as Hashmap.
+    public void getCurrentUserHunt() {
+
+
+        String hunt = mLocalStorage.fetchUserHunt();
+
+
+        for (int x = 0; x < mScavengerHuntArrayList.size(); x++) {
+
+            ScavengerHunt huntSelect = mScavengerHuntArrayList.get(x);
+
+            String name = huntSelect.getHuntName();
+
+            List<Item> places = huntSelect.getPlaces();
+
+
+            if (name.equalsIgnoreCase(hunt)) {
+
+                mLocalStorage.writeUserHunt(name);
+
+                updateUserCurrentHunt(name, places);
+
+
+                if (mNewUser == null) {
+
+                    mNewUser = new NewUser();
+
+                }
+
+
+                mFirebase.updateUserHunt(mNewUser, huntSelect);
+
+
+            }
+        }
+
+
+
+    }
+
+
+    public void updateUserCurrentHunt(String huntName, List<Item> places) {
+
+
+        mUserScore = mLocalStorage.getScore();
+
+        mUserHuntList = new HashMap();
+
+        mUserHuntList.put(huntName, places);
+
+
+
 
     }
 
@@ -246,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements
         this.mScavengerHuntArrayList = huntNames;
 
         ArrayList nameTest = new ArrayList();
+
 
         for (int x = 0; x < huntNames.size(); x++) {
 

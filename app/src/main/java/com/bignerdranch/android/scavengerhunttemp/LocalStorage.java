@@ -12,6 +12,9 @@ public class LocalStorage {
 
     private static final String USERNAME_KEY = "username";
     private static final String USER_HUNT = "userHunt";
+    private static final String USER_SCORE = "userScore";
+
+    private static final int DEFAULT_SCORE = 0;
 
 
     private Context mContext;
@@ -52,6 +55,22 @@ public class LocalStorage {
         return preferences.getString(USER_HUNT, null);
 
     }
+
+    protected void writeScore(int newScore) {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        preferences.edit().putInt(USER_SCORE, newScore).apply();
+
+
+    }
+
+    protected int getScore() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return preferences.getInt(USER_SCORE, DEFAULT_SCORE);
+
+    }
+
 
 
 
