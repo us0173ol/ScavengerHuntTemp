@@ -21,11 +21,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ActiveHuntActivity extends AppCompatActivity implements
@@ -50,6 +53,12 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     private String mHuntName;
     private int mHuntScore;
 
+    String tag;
+    double lat;
+    double lon;
+    float radius = 500;
+
+
 
 
 
@@ -73,6 +82,37 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap"); //TODO iterate over this and pull the information out.
 
 
+        /*so each key has an arraylist of values so this was the only way I could think of to pull out all values of each
+        * arraylist(place), main problem is that this way each hunt can only have one place otherwise variables just get overwritten and
+        * then sent to configureGeofence().  However, this does work and I was able to get Log.d messages in my log for everything necessary
+        * but I couldnt get it to make the Toast that I entered the geofence, just the Log message.*/
+        Set keys = mUserHuntInfo.keySet();
+        for(Iterator i = keys.iterator(); i.hasNext();){
+            String kEy = (String) i.next();
+            ArrayList<Item> value = (ArrayList<Item>) mUserHuntInfo.get(kEy);//breaks
+            for(Item item: value){
+
+                double lat1 = item.getLat();
+                double lon1 = item.getLon();
+                String tag1 = item.getPlaceName();
+
+                tag = tag1;
+                lat = lat1;
+                lon = lon1;
+            }
+            Toast.makeText(this, "lat=" + lat + " lon=" + lon + " tag=" + tag, Toast.LENGTH_LONG).show();
+            Log.d(TAG, kEy + " = " + value);
+
+        }
+
+//        Log.d(TAG, hunt.toString());
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
 
 
@@ -146,19 +186,27 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     }
 
 
-    private void configureGeoFence(double lat, double lon, float radius, String tag) {
+    private void configureGeoFence() {//(double lat, double lon, float radius, String tag)
         //Create a new GeoFence. Configure the GeoFence using a Builder. See documentation for setting options
         //Can create many GeoFences, differentiate by the requestId String. The lat+lon could be replaced with user input.
-        Geofence geoFence = new Geofence.Builder()
-                .setRequestId("mctc_geofence")    //identifies your GeoFence, put a unique String here
-                .setCircularRegion(
-                        44.973098,    	// latitude of MCTC
-                        -93.282692,     // longitude of MCTC
-                        1000                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
-                )
-                .setExpirationDuration(60 * 60 * 1000)      //Valid for an hour
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)  // Want to be notified when user enters and exits the GeoFence
-                .build();
+
+
+
+
+
+
+            Geofence geoFence = new Geofence.Builder()
+                    .setRequestId(tag)    //identifies your GeoFence, put a unique String here
+                    .setCircularRegion(
+                            lat,        // latitude of MCTC
+                            lon,     // longitude of MCTC
+                            radius                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
+                    )
+                    .setExpirationDuration(60 * 60 * 1000)      //Valid for an hour
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)  // Want to be notified when user enters and exits the GeoFence
+                    .build();
+
+
 
 
         // Create a GeoFencingRequest to contain the GeoFence. Later, you'll use this to request LocationServices monitor your GeoFence.
