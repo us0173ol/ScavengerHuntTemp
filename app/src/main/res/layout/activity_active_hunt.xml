@@ -27,7 +27,8 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/user_hunt_list"/>
+            android:id="@+id/android:list"
+            />
     </RelativeLayout>
 
     <RelativeLayout

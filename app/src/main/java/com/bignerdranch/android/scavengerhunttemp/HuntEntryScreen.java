@@ -101,14 +101,22 @@ public class HuntEntryScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                mFirebase.addNewHunt(mHuntTitleTemp, mAddressCollectionLatLon);
+                if (mAddressCollections.size() == 0) {
 
-                Log.e(CREATE_TAG, "locations added to database");
+                    Toast.makeText(getApplicationContext(), "I'm sorry, you must click next before continuing", Toast.LENGTH_LONG).show();
 
-                Toast.makeText(getApplicationContext(), "Hunt Created!", Toast.LENGTH_LONG).show();
+                } else {
 
-                setResult(RESULT_OK);
-                finish();
+                    mFirebase.addNewHunt(mHuntTitleTemp, mAddressCollectionLatLon);
+
+                    Log.e(CREATE_TAG, "locations added to database");
+
+                    Toast.makeText(getApplicationContext(), "Hunt Created!", Toast.LENGTH_LONG).show();
+
+                    setResult(RESULT_OK);
+                    finish();
+                }
+
 
 
                 //TODO I would like to figure out how to create this, it's throwing a weird error.
