@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
                             mLocalStorage.fetchUserHunt(), Toast.LENGTH_LONG).show();
                 }
 
-                /*
+/*
                 ScavengerHunt hunt = new ScavengerHunt();
 
                 ArrayList<Item> items = new ArrayList<>();
@@ -222,16 +222,16 @@ public class MainActivity extends AppCompatActivity implements
 
                 hunt.setPlaces(items);
                 hunt.setHuntName("Hunt 1");
-                */
+
 
                 //TODO start the activity with the
                 Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
 
-                //intent.putExtra("HUNT", hunt);   //todo make constant variable for key
+                intent.putExtra("HUNT", hunt);   //todo make constant variable for key
 
                 startActivity(intent);
 
-
+*/
 
             }
         });

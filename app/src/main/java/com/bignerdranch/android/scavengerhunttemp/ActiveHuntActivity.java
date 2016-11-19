@@ -60,8 +60,8 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         mFirebase.getUserHunts(this);
 
 
-        /*
-        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
+
+        //ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
         Intent launchIntent = getIntent();
         ScavengerHunt hunt = launchIntent.getParcelableExtra("HUNT");
 
@@ -82,7 +82,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
 
 
-        */
+
 
         //set up geofences
 
