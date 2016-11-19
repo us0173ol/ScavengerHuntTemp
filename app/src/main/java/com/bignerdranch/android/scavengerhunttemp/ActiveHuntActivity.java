@@ -1,7 +1,6 @@
 package com.bignerdranch.android.scavengerhunttemp;
 
 import android.app.PendingIntent;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -11,8 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,50 +21,68 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ActiveHuntActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>, Firebase.GeoFenceEventCallback, Firebase.getUserHuntList {
+        ResultCallback<Status>, Firebase.GeoFenceEventCallback {
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
     LocalStorage mLocalStorage;
 
-    protected ArrayList<Geofence> mGeofenceArrayList;
-    private Button mAddGeofencesButton;
+    HashMap mUserHuntInfo;
 
     int REQUEST_LOCATION_PERMISSION = 0;
 
     private static final String TAG = "Active hunt activity";
 
-    List<Item> mItems;
+    ListView mUserListView;
+    Button mUserDeleteButton;
+    Button mUserCheatButton;
+
+    private List<Item> mUserPlaceData;
+    private String mHuntName;
+    private int mHuntScore;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_hunt);
-        mAddGeofencesButton = (Button)findViewById(R.id.add_geofences_button);
 
-        mGeofenceArrayList = new ArrayList<Geofence>();
+        mUserListView = (ListView) findViewById(R.id.user_hunt_list);
+        mUserDeleteButton = (Button) findViewById(R.id.delete_hunt);
+        mUserCheatButton = (Button) findViewById(R.id.cheat_button);
 
 
         mLocalStorage = new LocalStorage(this);
         mFirebase = new Firebase(mLocalStorage);
 
-        mFirebase.getUserHunts(this);
+        mUserHuntInfo = new HashMap();
+
+        Intent intent = getIntent();
+
+        mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap"); //TODO iterate over this and pull the information out.
 
 
 
-        //ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
+
+
+
+
+
+        /*
+        ScavengerHunt hunt = savedInstanceState.getParcelable("HUNT");
         Intent launchIntent = getIntent();
         ScavengerHunt hunt = launchIntent.getParcelableExtra("HUNT");
-
-        mItems = hunt.getPlaces();
 
         Log.d(TAG, hunt.toString());
         if (mGoogleApiClient == null) {
@@ -80,9 +97,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
         Firebase firebase = new Firebase(mLocalStorage);
         firebase.beNotifiedOfGeoFenceEvents(this);
 
-
-
-
+        */
 
         //set up geofences
 
@@ -100,29 +115,10 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
 
         @Override
-        public void onConnected (@Nullable Bundle bundle) {
+        public void onConnected (@Nullable Bundle bundle){
             Log.d(TAG, "onConnected");
-            {
-                //configureGeoFences();
-            }
-            for (Item item : mItems) {
-                String tag = item.getPlaceName();
-                double lat = item.getLat();
-                double lon = item.getLon();
-                float radius = 500;
-                configureGeoFence(lat, lon, radius, tag);
-            }
+            configureGeoFence();
         }
-//    private void configureGeoFences(){
-//        //configure geofence with uniqueID tag
-//        //configuredGeoFence(45, -90, 100, uniquetag)
-//        String uniqueTag = "";
-//        for(Item item: mItems ){
-//                Log.d(TAG, "Item? " + item);
-//                uniqueTag = item.getPlaceName()+item.getLat();
-//
-//        }
-//    }
 
 
         //Callback for GoogleApiClient
@@ -153,20 +149,12 @@ public class ActiveHuntActivity extends AppCompatActivity implements
     private void configureGeoFence(double lat, double lon, float radius, String tag) {
         //Create a new GeoFence. Configure the GeoFence using a Builder. See documentation for setting options
         //Can create many GeoFences, differentiate by the requestId String. The lat+lon could be replaced with user input.
-        for(Item item : mItems){
-            tag = item.getPlaceName();
-            lat = item.getLat();
-            lon = item.getLon();
-            radius = 500;
-            Toast.makeText(this, "Items found?", Toast.LENGTH_LONG).show();
-        }
-
         Geofence geoFence = new Geofence.Builder()
-                .setRequestId(tag)    //identifies your GeoFence, put a unique String here
+                .setRequestId("mctc_geofence")    //identifies your GeoFence, put a unique String here
                 .setCircularRegion(
-                        lat,    	// latitude of MCTC
-                        lon,     // longitude of MCTC
-                        radius                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
+                        44.973098,    	// latitude of MCTC
+                        -93.282692,     // longitude of MCTC
+                        1000                 //radius of circle, in meters. Documentation recommends 100 meters as a minimum.
                 )
                 .setExpirationDuration(60 * 60 * 1000)      //Valid for an hour
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)  // Want to be notified when user enters and exits the GeoFence
@@ -244,7 +232,7 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //configureGeoFence();
+                configureGeoFence();
             }
         }
 
@@ -264,10 +252,6 @@ public class ActiveHuntActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void huntList(ArrayList huntNames) {
 
-        Toast.makeText(this, huntNames.toString(), Toast.LENGTH_LONG).show();
-    }
 }
 

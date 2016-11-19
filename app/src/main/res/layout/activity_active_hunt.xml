@@ -36,6 +36,20 @@
         android:id="@+id/hunt_footer"
         android:layout_alignParentBottom="true">
 
+        <Button
+            android:text="Delete Hunt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/delete_hunt"
+            android:layout_toRightOf="@+id/cheat_button"
+            android:padding="10dp"/>
+
+        <Button
+            android:text="Cheat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cheat_button"
+            android:padding="10dp"/>
     </RelativeLayout>
 
     <RelativeLayout
