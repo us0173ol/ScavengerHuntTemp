@@ -4,6 +4,8 @@ import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -11,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,6 +48,9 @@ public class ActiveHuntActivity extends ListActivity implements
 
     HashMap mUserHuntInfo;
 
+    ArrayList<ScavengerHunt> mhuntListTemp;
+
+
     int REQUEST_LOCATION_PERMISSION = 0;
 
     private static final String TAG = "Active hunt activity";
@@ -58,6 +65,9 @@ public class ActiveHuntActivity extends ListActivity implements
     private String mHuntName;
     private int mHuntScore;
     int isFound;
+    private String userSelection;
+
+    private ArrayList mUserAllLocations;
 
     private static final float radius = 500;
 
@@ -66,6 +76,8 @@ public class ActiveHuntActivity extends ListActivity implements
     double lat;
     double lon;
     String found;
+
+
 
 
 
@@ -87,8 +99,24 @@ public class ActiveHuntActivity extends ListActivity implements
 
         mUserHuntInfo = new HashMap();
         mUserPlaceData = new ArrayList();
+        //mhuntListTemp = new ArrayList<ScavengerHunt>();
+        //mUserAllLocations = new ArrayList();
+
 
         Intent intent = getIntent();
+
+        /*
+        mhuntListTemp = (ArrayList<ScavengerHunt>) intent.getSerializableExtra("hashMap");
+
+        for (int x = 0; x < mhuntListTemp.size(); x++) {
+
+            ScavengerHunt scavengerHunt = (ScavengerHunt) mhuntListTemp.get(x).getPlaces();
+
+
+            mUserAllLocations.add(scavengerHunt);
+
+
+        } */
 
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
 
@@ -144,6 +172,65 @@ public class ActiveHuntActivity extends ListActivity implements
         }
 
         setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, mUserPlaceData)); // Listview with checkboxes.
+
+
+        mUserListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                userSelection = mUserListView.getItemAtPosition(i).toString();
+
+            }
+        });
+
+        mUserCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (userSelection == null) {
+
+                    Toast.makeText(getApplicationContext(), "You need to select a route first",Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    Set keys = mUserHuntInfo.keySet();
+
+                    for (Iterator i = keys.iterator(); i.hasNext(); ) {
+
+                        String kEy = (String) i.next();
+
+                        ArrayList<Item> value = (ArrayList<Item>) mUserHuntInfo.get(kEy);
+
+                        for (Item item : value) {
+
+                            tag = item.getPlaceName();
+
+                            if (tag.equalsIgnoreCase(userSelection)) {
+
+                                lat = item.getLat();
+                                lon = item.getLon();
+
+                                Geocoder geocoder = new Geocoder(ActiveHuntActivity.this);
+
+                                String geoUriString = String.format("geo:%f,%f", lat, lon);
+
+                                Uri geoUri = Uri.parse(geoUriString);
+
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
+
+                                startActivity(mapIntent);
+
+                            }
+
+
+                        }
+
+
+                    }
+                }
+            }
+        });
+
 
 
     }

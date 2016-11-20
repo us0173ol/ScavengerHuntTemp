@@ -63,14 +63,11 @@ public class Firebase  {
 
     // Searches for and returns a list of all the places for the User hunt selection.
 
-    //TODO this isn't working, we need a way to search through the scanvanger hunt and
-    // TODO pull based on the hunt name, the problem is no data has been changed.
     public void getUserHunts(final getUserHuntList callback ) {
 
         String userName = mLocalStorage.fetchUsername();
 
         Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName);
-
 
         final ArrayList<ScavengerHunt> places = new ArrayList();
 
@@ -81,9 +78,23 @@ public class Firebase  {
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
+                    if (ds.getChildrenCount() < 2) {
 
-                    places.add(scavengerHunt);
+                        break;
+
+                    }
+                    else {
+
+                        if (places.size() == 1) {
+
+                            break;
+
+                        }
+
+                        ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
+
+                        places.add(scavengerHunt);
+                    }
 
                 }
 
@@ -243,8 +254,10 @@ public class Firebase  {
                 ArrayList<ScavengerHunt> messages = new ArrayList<ScavengerHunt>();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
                     //messages.add(ds.getValue(ScavengerHunt.class));
                     Log.d(TAG, ds.toString());
+
                 }
 
                 //callback.newGeoFenceEventMessages(messages);

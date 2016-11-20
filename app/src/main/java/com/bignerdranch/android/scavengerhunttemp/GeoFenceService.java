@@ -56,9 +56,11 @@ public class GeoFenceService extends IntentService {
         int isfound = 0;// 0=false
 
         for (Geofence geofence : listOfGeoFences) {
+
             Log.d(TAG, "Geofence ID: " + geofence.getRequestId());  //this is configured in MainActivity
 
             int transition = geofencingEvent.getGeofenceTransition();
+
             String transitionString = "";
             /*I was going to try to send an Intent if the area was found here, I tried to send it
             * to userHuntItemList and couldnt get that to work, and I was going to try to send it
