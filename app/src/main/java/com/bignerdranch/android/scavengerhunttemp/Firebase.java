@@ -204,7 +204,9 @@ public class Firebase  {
 
             ArrayList latLong = entry.getValue();
 
-            Item item = new Item(place, (double)latLong.get(0), (double)latLong.get(1));
+            String locFound = "no";
+
+            Item item = new Item(place, (double)latLong.get(0), (double)latLong.get(1), locFound);
 
             items.add(item);
 
@@ -228,6 +230,7 @@ public class Firebase  {
     }
 
     public void beNotifiedOfGeoFenceEvents(final GeoFenceEventCallback callback) {
+
         Query allEvents = mDatabaseReference;    //get all the data. TODO real app will probably filter somehow.
 
         allEvents.addValueEventListener(new ValueEventListener() {

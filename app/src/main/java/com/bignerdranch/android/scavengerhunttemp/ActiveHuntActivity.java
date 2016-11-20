@@ -85,7 +85,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
         Intent intent = getIntent();
 
-        mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap"); //TODO iterate over this and pull the information out.
+        mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)

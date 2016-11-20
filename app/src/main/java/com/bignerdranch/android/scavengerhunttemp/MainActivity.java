@@ -207,37 +207,15 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
 
-/*
-                ScavengerHunt hunt = new ScavengerHunt();
-
-                ArrayList<Item> items = new ArrayList<>();
-
-                Item item1 = new Item("IDS Center", 43, -90.9);
-                Item item2 = new Item("MCTC", 44, -93.9);
-                Item item3 = new Item("Loring Park", 42.4, -90);
-                Item item4 = new Item("Starbucks", 47.4, -92.3);
-
-                items.add(item1);
-                items.add(item2);
-                items.add(item3);
-                items.add(item4);
-
-                hunt.setPlaces(items);
-                hunt.setHuntName("Hunt 1");
-
-
-
-                intent.putExtra("HUNT", hunt);   //todo make constant variable for key
-
-
-*/
 
             }
         });
 
+
+
     }
 
-    // Saves user selection data localy so that it can be passed to activity as Hashmap.
+    // Saves user selection data locally so that it can be passed to activity as Hashmap.
     public void getCurrentUserHunt() {
 
 

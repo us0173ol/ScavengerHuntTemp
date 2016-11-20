@@ -13,6 +13,7 @@ public class Item implements Parcelable{
     String placeName;
     double lat;
     double lon;
+    String locationFound;
 
 
     // Used in Firebase
@@ -20,11 +21,12 @@ public class Item implements Parcelable{
 
 
     // Used to build locations for the hunts.
-    public Item(String placeName, double lat, double lon) {
+    public Item(String placeName, double lat, double lon, String locationFound) {
 
         this.placeName = placeName;
         this.lat = lat;
         this.lon = lon;
+        this.locationFound = locationFound;
 
     }
 
@@ -32,6 +34,7 @@ public class Item implements Parcelable{
         placeName = in.readString();
         lat = in.readDouble();
         lon = in.readDouble();
+        locationFound = in.readString();
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -70,12 +73,21 @@ public class Item implements Parcelable{
         this.placeName = placeName;
     }
 
+    public String getLocationFound() {
+        return locationFound;
+    }
+
+    public void setLocationFound(String locationFound) {
+        this.locationFound = locationFound;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
                 "placeName='" + placeName + '\'' +
                 ", lat=" + lat +
                 ", lon=" + lon +
+                " locationFound=" + locationFound +
                 '}';
     }
 
@@ -89,5 +101,6 @@ public class Item implements Parcelable{
         parcel.writeString(placeName);
         parcel.writeDouble(lat);
         parcel.writeDouble(lon);
+        parcel.writeString(locationFound);
     }
 }
