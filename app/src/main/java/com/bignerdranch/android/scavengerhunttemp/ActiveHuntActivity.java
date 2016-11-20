@@ -61,6 +61,7 @@ public class ActiveHuntActivity extends ListActivity implements
     String tag;
     double lat;
     double lon;
+    String found;
 
 
 
@@ -109,7 +110,27 @@ public class ActiveHuntActivity extends ListActivity implements
             for (Item item : value) {
 
                 tag = item.getPlaceName();
+                found = item.getLocationFound();
+
+
                 mUserPlaceData.add(tag);
+
+                //TODO I would like to have the program check or uncheck boxes based on their
+                //TODO "found" data. This section is not doing that.
+                for (int x = 0; x < mUserPlaceData.size(); x++) {
+
+                    if (found.equalsIgnoreCase("yes")) {
+
+                        mUserListView.isItemChecked(x);
+
+                    } else {
+
+                        mUserListView.isItemChecked(x);
+
+                    }
+
+                }
+
 
             }
 
