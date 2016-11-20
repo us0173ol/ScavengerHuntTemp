@@ -132,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+
+                mUserHunt = mLocalStorage.fetchUserHunt();
+
                 if (mUserHunt == null) {
 
                     String hunt = mHuntListView.getItemAtPosition(i).toString();
@@ -287,8 +290,6 @@ public class MainActivity extends AppCompatActivity implements
 
             updateUserCurrentHunt(name, places);
 
-
-            Toast.makeText(this, "nope", Toast.LENGTH_LONG).show();
 
         }
     }

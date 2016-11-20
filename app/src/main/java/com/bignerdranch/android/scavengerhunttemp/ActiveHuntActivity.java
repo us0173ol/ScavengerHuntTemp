@@ -99,24 +99,11 @@ public class ActiveHuntActivity extends ListActivity implements
 
         mUserHuntInfo = new HashMap();
         mUserPlaceData = new ArrayList();
-        //mhuntListTemp = new ArrayList<ScavengerHunt>();
-        //mUserAllLocations = new ArrayList();
+
 
 
         Intent intent = getIntent();
 
-        /*
-        mhuntListTemp = (ArrayList<ScavengerHunt>) intent.getSerializableExtra("hashMap");
-
-        for (int x = 0; x < mhuntListTemp.size(); x++) {
-
-            ScavengerHunt scavengerHunt = (ScavengerHunt) mhuntListTemp.get(x).getPlaces();
-
-
-            mUserAllLocations.add(scavengerHunt);
-
-
-        } */
 
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
 
@@ -143,29 +130,8 @@ public class ActiveHuntActivity extends ListActivity implements
             for (Item item : value) {
 
                 tag = item.getPlaceName();
-                found = item.getLocationFound();
-
 
                 mUserPlaceData.add(tag);
-
-                //TODO I would like to have the program check or uncheck boxes based on their
-                //TODO "found" data. This section is not doing that.
-                for (int x = 0; x < mUserPlaceData.size(); x++) {
-
-                    if (found.equalsIgnoreCase("yes")) {
-                        mUserListView.isItemChecked(x);
-
-
-                    } else {
-
-                        mUserListView.isItemChecked(x);
-
-
-                    }
-
-                }
-
-
 
             }
 
@@ -232,6 +198,15 @@ public class ActiveHuntActivity extends ListActivity implements
         });
 
 
+        mUserDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mFirebase.deleteUserHunt();
+                finish();
+
+            }
+        });
 
     }
 

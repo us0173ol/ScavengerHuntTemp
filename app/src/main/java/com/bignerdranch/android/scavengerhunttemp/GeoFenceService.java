@@ -62,16 +62,14 @@ public class GeoFenceService extends IntentService {
             int transition = geofencingEvent.getGeofenceTransition();
 
             String transitionString = "";
-            /*I was going to try to send an Intent if the area was found here, I tried to send it
-            * to userHuntItemList and couldnt get that to work, and I was going to try to send it
-            * to ActiveHuntActivity but Im not quite sure how we would use it.  Im stuck on this one...*/
+
             if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 transitionString = "entered";
 
-//                isfound = 1;
-//                Intent foundIntent = new Intent(GeoFenceService.this, ActiveHuntActivity.class);
-//                foundIntent.putExtra("ISFOUND", isfound);
-//                startActivity(foundIntent);
+                mLocalStorage = new LocalStorage(this);
+                Firebase firebase = new Firebase(mLocalStorage);
+                firebase.updateLocationFound(geofence.getRequestId());
+
             } else if (transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                 transitionString = "is dwelling in";
             } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
@@ -86,6 +84,7 @@ public class GeoFenceService extends IntentService {
 
             Firebase firebase = new Firebase(mLocalStorage);
             firebase.addGeoFenceEvent(eventMessage);   //TODO an object to store more detail about event
+
 
         }
 

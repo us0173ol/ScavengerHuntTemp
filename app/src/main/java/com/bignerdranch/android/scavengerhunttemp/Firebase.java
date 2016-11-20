@@ -196,6 +196,61 @@ public class Firebase  {
 
     }
 
+    //This will delete the user's current hunt.
+    public void deleteUserHunt() {
+
+        String userName = mLocalStorage.fetchUsername();
+
+        DatabaseReference databaseReference = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("mScavengerHunt");
+
+        databaseReference.setValue(null);
+
+        mLocalStorage.writeUserHunt(null);
+
+    }
+
+    // Will change the value of location found to "yes"
+    //TODO not working yet.
+    public void updateLocationFound(final String placeName) {
+
+        String userName = mLocalStorage.fetchUsername();
+
+        final Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("mScavengerHunt").child("places");
+
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    Item item = ds.getValue(Item.class);
+
+                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
+
+                    List<Item> itemList = scavengerHunt.getPlaces();
+
+                    String parent = itemList.get(0).toString();
+
+                    String location = item.getPlaceName();
+
+                    if (placeName.equalsIgnoreCase(location)) {
+
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
 
 
