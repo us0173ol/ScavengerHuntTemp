@@ -204,7 +204,7 @@ public class Firebase  {
 
             ArrayList latLong = entry.getValue();
 
-            String locFound = "no";
+            String locFound = "yes";
 
             Item item = new Item(place, (double)latLong.get(0), (double)latLong.get(1), locFound);
 

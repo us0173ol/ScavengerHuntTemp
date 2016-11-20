@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -47,13 +48,16 @@ public class ActiveHuntActivity extends ListActivity implements
 
     private static final String TAG = "Active hunt activity";
 
+
     ListView mUserListView;
     Button mUserDeleteButton;
     Button mUserCheatButton;
 
+
     private ArrayList mUserPlaceData;
     private String mHuntName;
     private int mHuntScore;
+    int isFound;
 
     private static final float radius = 500;
 
@@ -88,6 +92,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
 
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -120,16 +125,18 @@ public class ActiveHuntActivity extends ListActivity implements
                 for (int x = 0; x < mUserPlaceData.size(); x++) {
 
                     if (found.equalsIgnoreCase("yes")) {
-
                         mUserListView.isItemChecked(x);
+
 
                     } else {
 
                         mUserListView.isItemChecked(x);
 
+
                     }
 
                 }
+
 
 
             }
@@ -315,7 +322,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
             //real app - do something more useful
             //Toast.makeText(this, , Toast.LENGTH_LONG).show();
-            Log.d(TAG, message.toString());
+            Log.d(TAG, "THIS IS THE GEOFENCE EVENT MESSAGES" + message.toString());
         }
 
     }

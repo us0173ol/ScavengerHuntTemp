@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
     Button mStartButton;
     Button mNewHuntButton;
     ListView mHuntListView;
-    Button mLaunchActiveHuntScreen;
+    //Button mLaunchActiveHuntScreen;
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-        mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
+       // mLaunchActiveHuntScreen = (Button)findViewById(R.id.launch_active_hunt_screen);
         mStartButton = (Button) findViewById(R.id.start_hunt_button);
         mHuntListView = (ListView) findViewById(R.id.hunt_list_view);
         mNewHuntButton = (Button) findViewById(R.id.new_hunt_button);
@@ -110,17 +110,17 @@ public class MainActivity extends AppCompatActivity implements
 
 
         // Works with current hunt if one exists.
-        mLaunchActiveHuntScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String userSelection = mLocalStorage.fetchUserHunt();
-
-                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
-
-                startActivityForResult(intent, ACTIVE_HUNT_CODE);
-            }
-        });
+        //mLaunchActiveHuntScreen.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                String userSelection = mLocalStorage.fetchUserHunt();
+//
+//                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
+//
+//                startActivityForResult(intent, ACTIVE_HUNT_CODE);
+//            }
+//        });
 
 
 

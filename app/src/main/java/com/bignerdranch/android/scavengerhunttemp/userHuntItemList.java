@@ -1,5 +1,7 @@
 package com.bignerdranch.android.scavengerhunttemp;
 
+import android.widget.CheckBox;
+
 /**
  * Created by Brendon on 11/19/16.
  */
@@ -8,13 +10,20 @@ package com.bignerdranch.android.scavengerhunttemp;
 
 public class userHuntItemList {
 
+
     String mPlaceName;
     boolean mIsChecked;
+
+
+
+
 
     public userHuntItemList(String place, boolean isChecked) {
 
         this.mPlaceName = place;
         this.mIsChecked = isChecked;
+
+
 
     }
 

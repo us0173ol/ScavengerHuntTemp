@@ -3,6 +3,7 @@ package com.bignerdranch.android.scavengerhunttemp;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -52,13 +53,23 @@ public class GeoFenceService extends IntentService {
 
         Log.d(TAG, "The request IDs of all GeoFences triggered:");
 
+        int isfound = 0;// 0=false
+
         for (Geofence geofence : listOfGeoFences) {
             Log.d(TAG, "Geofence ID: " + geofence.getRequestId());  //this is configured in MainActivity
 
             int transition = geofencingEvent.getGeofenceTransition();
             String transitionString = "";
+            /*I was going to try to send an Intent if the area was found here, I tried to send it
+            * to userHuntItemList and couldnt get that to work, and I was going to try to send it
+            * to ActiveHuntActivity but Im not quite sure how we would use it.  Im stuck on this one...*/
             if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 transitionString = "entered";
+
+//                isfound = 1;
+//                Intent foundIntent = new Intent(GeoFenceService.this, ActiveHuntActivity.class);
+//                foundIntent.putExtra("ISFOUND", isfound);
+//                startActivity(foundIntent);
             } else if (transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                 transitionString = "is dwelling in";
             } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
@@ -68,7 +79,7 @@ public class GeoFenceService extends IntentService {
             Date currentTime = new Date();
             String eventMessage = "Device " + transitionString + " GeoFence with tag " + geofence.getRequestId() + " at " + currentTime ;
             // e.g. "Device entered GeoFence with tag MCTC_Geofence at November 8 2016 15.12:12..."
-
+            Toast.makeText(this, eventMessage, Toast.LENGTH_LONG).show();
             mLocalStorage = new LocalStorage(this);
 
             Firebase firebase = new Firebase(mLocalStorage);
