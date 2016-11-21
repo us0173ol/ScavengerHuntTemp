@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 mUserHunt = mLocalStorage.fetchUserHunt();
 
-                if (mUserHunt == null) {
+                if (mUserHunt != null) {
 
                     String hunt = mHuntListView.getItemAtPosition(i).toString();
 
