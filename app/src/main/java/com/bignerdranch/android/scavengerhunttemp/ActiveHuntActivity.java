@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class ActiveHuntActivity extends ListActivity implements
     Button mUserCheatButton;
 
 
-    private ArrayList mUserPlaceData;
+    private ArrayList<Item> mUserPlaceData;
     private String mHuntName;
     private int mHuntScore;
     int isFound;
@@ -98,7 +99,7 @@ public class ActiveHuntActivity extends ListActivity implements
         mFirebase = new Firebase(mLocalStorage);
 
         mUserHuntInfo = new HashMap();
-        mUserPlaceData = new ArrayList();
+        mUserPlaceData = new ArrayList<Item>();
 
 
 
@@ -131,13 +132,23 @@ public class ActiveHuntActivity extends ListActivity implements
 
                 tag = item.getPlaceName();
 
-                mUserPlaceData.add(tag);
+                //mUserPlaceData.add(tag);
+
+                //User items
+
+                mUserPlaceData.add(item);
+
 
             }
 
         }
 
-        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, mUserPlaceData)); // Listview with checkboxes.
+
+        ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
+        setListAdapter(adapter); // Listview with checkboxes.
+
+
+
 
 
         mUserListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

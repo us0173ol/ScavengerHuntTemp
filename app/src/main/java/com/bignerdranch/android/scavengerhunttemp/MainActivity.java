@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements
 
         ArrayList nameTest = new ArrayList();
 
+        Log.d(TAG, "Hunt names = " + huntNames.size()  + " " + huntNames);
 
         for (int x = 0; x < huntNames.size(); x++) {
 
