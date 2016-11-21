@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
 
-        //mLocalStorage.writeUserHunt(null);
-
 
 
         // If one doesn't exist this will create it.
@@ -115,21 +113,6 @@ public class MainActivity extends AppCompatActivity implements
         mFirebase.getUserHunts(MainActivity.this);
 
 
-
-
-
-        // Works with current hunt if one exists.
-        //mLaunchActiveHuntScreen.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                String userSelection = mLocalStorage.fetchUserHunt();
-//
-//                Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
-//
-//                startActivityForResult(intent, ACTIVE_HUNT_CODE);
-//            }
-//        });
 
 
 
