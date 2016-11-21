@@ -48,7 +48,10 @@ public class MainActivity extends AppCompatActivity implements
 
     ArrayList<ScavengerHunt> mHuntList;
     ArrayList<ScavengerHunt> mScavengerHuntArrayList;
+    ArrayList mScavengerHuntNamesList;
     HashMap mUserHuntList;
+
+    ArrayAdapter mHuntArrayAdapter;
 
     String mUserName;
     String mUserHunt;
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
 
+        //mLocalStorage.writeUserHunt(null);
+
+
 
         // If one doesn't exist this will create it.
         if (mUserName == null) {
@@ -98,11 +104,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
 
-        mUserHunt = mLocalStorage.fetchUserHunt();
-
         mHuntList = new ArrayList<ScavengerHunt>();
 
         mScavengerHuntArrayList = new ArrayList<ScavengerHunt>();
+
+        mScavengerHuntNamesList = new ArrayList();
 
         mFirebase.getAllScavengerLists(MainActivity.this);
 
@@ -127,15 +133,15 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-        // Changes the current hunt the User is on, Currently there is no way to stop the User from selecting any hunt they want.
+        // Changes the current hunt the User is on.
         mHuntListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                mUserHunt = mLocalStorage.fetchUserHunt();
+                String selection = mLocalStorage.fetchUserHunt();
 
-                if (mUserHunt == null) {
+                if (selection == null || selection.equalsIgnoreCase("none")) {
 
                     String hunt = mHuntListView.getItemAtPosition(i).toString();
 
@@ -203,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 String huntSelection = mLocalStorage.fetchUserHunt();
 
-                if (huntSelection == null) {
+                if (huntSelection == null || huntSelection.equalsIgnoreCase("none")) {
 
                     Toast.makeText(MainActivity.this, "You need to select a Scavenger Hunt.", Toast.LENGTH_SHORT).show();
 
@@ -241,15 +247,27 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mLocalStorage = new LocalStorage(this);
+
+        if (resultCode == RESULT_OK) {
+
+            mFirebase.getAllScavengerLists(MainActivity.this);
+        }
 
 
+    }
 
     @Override
     public void huntnameList(ArrayList<ScavengerHunt> huntNames) {
 
+
+        this.mScavengerHuntNamesList.clear();
         this.mScavengerHuntArrayList = huntNames;
 
-        ArrayList nameTest = new ArrayList();
 
         Log.d(TAG, "Hunt names = " + huntNames.size()  + " " + huntNames);
 
@@ -259,12 +277,12 @@ public class MainActivity extends AppCompatActivity implements
 
             String huntTitle = item.getHuntName();
 
-            nameTest.add(huntTitle);
+            mScavengerHuntNamesList.add(huntTitle);
         }
 
-        ArrayAdapter<ScavengerHunt> arrayAdapter = new ArrayAdapter(MainActivity.this, R.layout.list_view, R.id.list_view_text, nameTest);
+        mHuntArrayAdapter = new ArrayAdapter(this, R.layout.list_view, R.id.list_view_text, mScavengerHuntNamesList);
 
-        mHuntListView.setAdapter(arrayAdapter);
+        mHuntListView.setAdapter(mHuntArrayAdapter);
 
     }
 
@@ -278,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mHuntList.size() == 0) {
 
             Toast.makeText(this, "You have no current hunt", Toast.LENGTH_SHORT).show();
+            mLocalStorage.writeUserHunt(null);
 
         } else { // Update the current hunt list.
 

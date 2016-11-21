@@ -201,7 +201,7 @@ public class Firebase  {
 
         databaseReference.setValue(null);
 
-        mLocalStorage.writeUserHunt(null);
+        mLocalStorage.writeUserHunt("none");
 
     }
 
@@ -257,7 +257,7 @@ public class Firebase  {
 
             ArrayList latLong = entry.getValue();
 
-            String locFound = "yes";
+            String locFound = "no";
 
             Item item = new Item(place, (double)latLong.get(0), (double)latLong.get(1), locFound);
 

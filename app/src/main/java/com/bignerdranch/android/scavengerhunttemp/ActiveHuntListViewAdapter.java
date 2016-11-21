@@ -21,6 +21,8 @@ import java.util.List;
 
 public class ActiveHuntListViewAdapter extends ArrayAdapter<Item> {
 
+	LocalStorage mLocalStorage;
+
 
 	public ActiveHuntListViewAdapter(Context context, int resource, List<Item> objects) {
 		super(context, resource, objects);
@@ -28,6 +30,8 @@ public class ActiveHuntListViewAdapter extends ArrayAdapter<Item> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+
+		mLocalStorage = new LocalStorage(getContext());
 
 		//set up your list items
 		CheckedTextView row = (CheckedTextView) super.getView(position, convertView, parent);
@@ -40,7 +44,10 @@ public class ActiveHuntListViewAdapter extends ArrayAdapter<Item> {
 
 		boolean isFound = false;
 		if (item.getLocationFound() != null && item.getLocationFound().equals("yes")) {
+
 			isFound = true;
+
+
 		}
 
 		((ListView)parent).setItemChecked(position, isFound);   //setting the checkbox is awkward - ask the parent ListView to check or uncheck it

@@ -67,6 +67,7 @@ public class ActiveHuntActivity extends ListActivity implements
     private int mHuntScore;
     int isFound;
     private String userSelection;
+    private String userSelectionName; // For cheating purposes.
 
     private ArrayList mUserAllLocations;
 
@@ -78,7 +79,9 @@ public class ActiveHuntActivity extends ListActivity implements
     double lon;
     String found;
 
+    int mUserScore;
 
+    int mUserMaxScore;
 
 
 
@@ -103,11 +106,17 @@ public class ActiveHuntActivity extends ListActivity implements
 
 
 
+
         Intent intent = getIntent();
 
 
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
 
+        for (Object key : mUserHuntInfo.keySet()) {
+
+            mHuntName = key.toString();
+
+        }
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -126,22 +135,28 @@ public class ActiveHuntActivity extends ListActivity implements
 
             String kEy = (String) i.next();
 
+
             ArrayList<Item> value = (ArrayList<Item>) mUserHuntInfo.get(kEy);
 
             for (Item item : value) {
 
                 tag = item.getPlaceName();
 
-                //mUserPlaceData.add(tag);
+                found = item.getLocationFound();
 
-                //User items
+                if (found.equalsIgnoreCase("yes")) {
+
+                    mUserScore = mUserScore + 1;
+
+                }
 
                 mUserPlaceData.add(item);
-
 
             }
 
         }
+
+
 
 
         ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
@@ -157,6 +172,11 @@ public class ActiveHuntActivity extends ListActivity implements
 
                 userSelection = mUserListView.getItemAtPosition(i).toString();
 
+                Item item = (Item) mUserListView.getItemAtPosition(i);
+
+                userSelectionName = item.getPlaceName();
+
+
             }
         });
 
@@ -164,7 +184,9 @@ public class ActiveHuntActivity extends ListActivity implements
             @Override
             public void onClick(View view) {
 
-                if (userSelection == null) {
+
+
+                if (userSelectionName == null) {
 
                     Toast.makeText(getApplicationContext(), "You need to select a route first",Toast.LENGTH_LONG).show();
 
@@ -182,7 +204,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
                             tag = item.getPlaceName();
 
-                            if (tag.equalsIgnoreCase(userSelection)) {
+                            if (tag.equalsIgnoreCase(userSelectionName)) {
 
                                 lat = item.getLat();
                                 lon = item.getLon();
@@ -214,6 +236,8 @@ public class ActiveHuntActivity extends ListActivity implements
             public void onClick(View view) {
 
                 mFirebase.deleteUserHunt();
+                mLocalStorage.writeUserHunt(null);
+                setResult(RESULT_OK);
                 finish();
 
             }
@@ -311,6 +335,8 @@ public class ActiveHuntActivity extends ListActivity implements
 
                 //Create a regular intent
                 Intent geoFenceIntent = new Intent(this, GeoFenceService.class);
+
+                geoFenceIntent.putExtra("huntNmae", mHuntName);
                 //Wrap it in a pending intent - an intent that can be used to send the Intent at a later time. The Geofence will use this to start the Service
                 PendingIntent geoFencePendingIntent = PendingIntent.getService(this, 0, geoFenceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -346,17 +372,21 @@ public class ActiveHuntActivity extends ListActivity implements
                 }
 
 
-                Toast.makeText(this, "lat=" + lat1 + " lon=" + lon1 + " tag=" + tag1, Toast.LENGTH_LONG).show();
-
 
             }
 
-            //Toast.makeText(this, "lat=" + lat1 + " lon=" + lon1 + " tag=" + tag1, Toast.LENGTH_LONG).show();
             Log.d(TAG, kEy + " = " + value);
 
         }
 
 
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
 
     }

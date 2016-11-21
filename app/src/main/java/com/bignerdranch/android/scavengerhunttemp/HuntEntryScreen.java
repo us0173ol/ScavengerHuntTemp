@@ -41,6 +41,8 @@ public class HuntEntryScreen extends AppCompatActivity {
     HashMap<String, String> mAddressCollections;
     HashMap<String, ArrayList> mAddressCollectionLatLon;
 
+    ArrayList mNameCheckList;
+
     private String mHuntTitleTemp;
 
     private static final String ENTRY_TAG = "entered";
@@ -67,6 +69,8 @@ public class HuntEntryScreen extends AppCompatActivity {
 
         mFirebase = new Firebase(mLocalStorage);
 
+        mNameCheckList = new ArrayList();
+
         mAddressCollections = new HashMap<String, String>();
         mAddressCollectionLatLon = new HashMap<String, ArrayList>();
 
@@ -79,6 +83,29 @@ public class HuntEntryScreen extends AppCompatActivity {
                 mHuntTitleTemp = mTitleEntry.getText().toString();
 
                 String locationTitle = mLocTitleEntry.getText().toString();
+
+                // This makes sure the User cannot add the same location name twice to the hunt.
+                for (Object name : mNameCheckList) {
+
+                    String tempName = name.toString();
+
+                    if (mNameCheckList.size() == 0) {
+
+                        break;
+
+                    }
+
+                    if (locationTitle.equalsIgnoreCase(tempName)) {
+
+                        Toast.makeText(getApplicationContext(), "You cannot have two entries with the same name.", Toast.LENGTH_LONG);
+
+                    } else {
+
+                        mNameCheckList.add(locationTitle);
+
+                    }
+
+                }
 
                 String locationAddress = mAddressEntry.getText().toString();
 
@@ -106,6 +133,7 @@ public class HuntEntryScreen extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "I'm sorry, you must click next before continuing", Toast.LENGTH_LONG).show();
 
                 } else {
+
 
                     mFirebase.addNewHunt(mHuntTitleTemp, mAddressCollectionLatLon);
 
