@@ -209,38 +209,30 @@ public class Firebase  {
 
     }
 
-    // Will change the value of location found to "yes"
+     // Will change the value of location found to "yes"
     //TODO not working yet.
     public void updateLocationFound(final String placeName) {
 
         String userName = mLocalStorage.fetchUsername();
 
-        final Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("mScavengerHunt").child("places");
-
-
-        query.addValueEventListener(new ValueEventListener() {
+        Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName).child("mScavengerHunt").child("places").orderByChild("placeName").equalTo(placeName);
+                                                                                                                    //as you had, but order by the placeName child key, which lets you then only select children with placeName equal to your placeName parameter
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                //dataSnaphot points to a list of children - your list of places. Hopefully only one match. TODO what if 0 matches, or more than one match for the placeName?
 
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                Log.d(TAG, "Query result ref " + dataSnapshot.getRef());
 
-                    Item item = ds.getValue(Item.class);
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                    ScavengerHunt scavengerHunt = ds.getValue(ScavengerHunt.class);
-
-                    List<Item> itemList = scavengerHunt.getPlaces();
-
-                    String parent = itemList.get(0).toString();
-
-                    String location = item.getPlaceName();
-
-                    if (placeName.equalsIgnoreCase(location)) {
-
-
+                        DatabaseReference ref = child.getRef();   //Points to 0 or 1 or 2 ... in the list, wherever the place is
+                        Log.d(TAG, "reference found for this place is " + ref);
+                        DatabaseReference locFoundRef = ref.child("locationFound");   //Make new child with key "locationFound", and save the reference to that key
+                        locFoundRef.setValue("yes");  //set the value of this key's reference to 'yes'
                     }
 
-                }
             }
 
             @Override
@@ -248,9 +240,8 @@ public class Firebase  {
 
             }
         });
-
+        
     }
-
 
 
 
