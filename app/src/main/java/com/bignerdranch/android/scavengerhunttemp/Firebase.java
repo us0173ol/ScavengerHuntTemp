@@ -201,7 +201,7 @@ public class Firebase  {
 
         databaseReference.setValue(null);
 
-        mLocalStorage.writeUserHunt("none");
+        mLocalStorage.writeUserHunt(null);
 
     }
 

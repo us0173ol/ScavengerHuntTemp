@@ -71,6 +71,8 @@ public class GeoFenceService extends IntentService {
                 Firebase firebase = new Firebase(mLocalStorage);
                 firebase.updateLocationFound(geofence.getRequestId());
 
+
+
             } else if (transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                 transitionString = "is dwelling in";
             } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
@@ -85,6 +87,7 @@ public class GeoFenceService extends IntentService {
 
             Firebase firebase = new Firebase(mLocalStorage);
             firebase.addGeoFenceEvent(eventMessage);   //TODO an object to store more detail about event
+
 
 
         }
