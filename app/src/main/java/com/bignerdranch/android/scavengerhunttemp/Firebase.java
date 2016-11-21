@@ -127,15 +127,13 @@ public class Firebase  {
 
     public void getAllScavengerLists(final huntListnames callback) {
 
-
         Query query = mDatabaseReference.child(Scavenger_Lists_Key);
-
-        final ArrayList<ScavengerHunt> arrayList = new ArrayList();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                ArrayList<ScavengerHunt> arrayList = new ArrayList<ScavengerHunt>();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
@@ -145,12 +143,11 @@ public class Firebase  {
 
                     arrayList.add(huntClass);
 
-
                 }
 
                 callback.huntnameList(arrayList);
 
-                Log.d(LIST_TAG, arrayList.toString());
+                Log.d(LIST_TAG, "Scavenger Hunts from FB database" + arrayList.size() + arrayList.toString());
 
             }
 
@@ -159,7 +156,6 @@ public class Firebase  {
 
             }
         });
-
 
     }
 
