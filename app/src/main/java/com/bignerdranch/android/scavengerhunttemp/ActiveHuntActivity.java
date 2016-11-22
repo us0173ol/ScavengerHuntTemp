@@ -113,7 +113,6 @@ public class ActiveHuntActivity extends ListActivity implements
 
 
 
-
         Intent intent = getIntent();
 
 
@@ -162,8 +161,18 @@ public class ActiveHuntActivity extends ListActivity implements
             }
 
             mUserMaxScore = mUserPlaceData.size();
+            if (mUserScore == mUserMaxScore){
+                Toast.makeText(this, "You've completed the hunt!!", Toast.LENGTH_LONG).show();
+
+//                mFirebase.deleteUserHunt();
+//                mLocalStorage.writeUserHunt(null);
+//                setResult(RESULT_OK);
+//                finish();
+
+            }
 
         }
+
 
 
         ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
@@ -409,6 +418,7 @@ public class ActiveHuntActivity extends ListActivity implements
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
             Log.d(TAG, "GeoFence added");
+
         } else {
             Log.d(TAG, "Error adding GeoFence status " + status.getStatusCode());
         }

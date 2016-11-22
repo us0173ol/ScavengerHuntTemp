@@ -70,6 +70,7 @@ public class GeoFenceService extends IntentService {
                 mLocalStorage = new LocalStorage(this);
                 Firebase firebase = new Firebase(mLocalStorage);
                 firebase.updateLocationFound(geofence.getRequestId());
+                onCreate();//TODO only toasts when onCreate is called, active hunt screen only updates when Mainactivity is rotated
 
 
 
@@ -87,6 +88,7 @@ public class GeoFenceService extends IntentService {
 
             Firebase firebase = new Firebase(mLocalStorage);
             firebase.addGeoFenceEvent(eventMessage);   //TODO an object to store more detail about event
+
 
 
 

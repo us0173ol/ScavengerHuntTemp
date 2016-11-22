@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.awareness.fence.LocationFence;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
     double mUserScore;
 
     private static final String NEW_HUNT_KEY = "new hunt";
-    private static final String TAG = "GEOFENCE";
+    private static final String TAG = "MAINACTIVITY";
 
 
     private static final int NEW_HUNT_CODE = 0;
@@ -306,7 +307,34 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart");
+        super.onStart();
+    }
 
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop");
+        super.onStop();
+    }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume");
+        super.onResume();
+    }
 }
 

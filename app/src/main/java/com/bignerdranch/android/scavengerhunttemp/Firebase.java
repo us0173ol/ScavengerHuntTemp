@@ -226,6 +226,7 @@ public class Firebase  {
                         DatabaseReference ref = child.getRef();   //Points to 0 or 1 or 2 ... in the list, wherever the place is
                         Log.d(TAG, "reference found for this place is " + ref);
                         DatabaseReference locFoundRef = ref.child("locationFound");   //Make new child with key "locationFound", and save the reference to that key
+
                         locFoundRef.setValue("yes");  //set the value of this key's reference to 'yes'
                     }
 
@@ -297,7 +298,7 @@ public class Firebase  {
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                   // messages.add(ds.getValue(ScavengerHunt.class));
+                 //   messages.add(ds.getValue(ScavengerHunt.class));
 
 
                 }

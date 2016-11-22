@@ -21,7 +21,9 @@
             android:text="This is a list of scavenger hunts. You can either select one to play or create a new one. You can only have one active hunt at a time."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/main_instructions"/>
+            android:id="@+id/main_instructions"
+            android:fontFamily="monospace"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -62,7 +64,6 @@
             android:id="@+id/hunt_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:dividerHeight="@dimen/activity_horizontal_margin"
             >
 
         </ListView>

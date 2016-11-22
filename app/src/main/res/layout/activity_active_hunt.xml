@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/cheat_button"
             android:padding="10dp"/>
+
     </RelativeLayout>
 
     <RelativeLayout
