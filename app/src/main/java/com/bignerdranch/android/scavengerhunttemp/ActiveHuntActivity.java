@@ -457,6 +457,8 @@ public class ActiveHuntActivity extends ListActivity implements
     public void newGeoFenceEventMessages(ArrayList<ScavengerHunt> messages) {
 
         // Figure out a way to update score from here.
+        System.out.println("testing");
+
 
 
     }
