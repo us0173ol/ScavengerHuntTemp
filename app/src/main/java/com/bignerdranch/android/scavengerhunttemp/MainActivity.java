@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<ScavengerHunt> mHuntList;
     ArrayList<ScavengerHunt> mScavengerHuntArrayList;
     ArrayList mScavengerHuntNamesList;
-    HashMap mUserHuntList;
+    HashMap mUserHuntList;              // you all need to work on your variable names
 
     ArrayAdapter mHuntArrayAdapter;
 
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
 
                     Intent intent = new Intent(MainActivity.this, ActiveHuntActivity.class);
-                    intent.putExtra("hashMap", mUserHuntList);
+                    intent.putExtra("hashMap", mUserHuntList);    ///Why don't you use a ScavengerHunt object??
 
                     startActivityForResult(intent, ACTIVE_HUNT_CODE);
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mUserHuntList = new HashMap();
 
-        mUserHuntList.put(huntName, places);
+        mUserHuntList.put(huntName, places);   //and if you must use a HashMap, use generic types and give it a better name.
 
 
 

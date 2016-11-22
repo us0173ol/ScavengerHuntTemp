@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import static com.google.android.gms.wearable.DataMap.TAG;
 
 /**
  * Created by Brendon on 11/8/16.
@@ -40,6 +39,8 @@ public class Firebase  {
     private static final String Scavenger_Lists_Key = "scavenger_hunts";
     private static final String USER_NAME_KEY = "user_names";
     private static final String LIST_TAG = "ckascbk";
+    private static final String TAG = "FB DATABASE";
+
 
     private String mUserHuntKey;
 
@@ -65,16 +66,19 @@ public class Firebase  {
 
     public void getUserHunts(final getUserHuntList callback ) {
 
+        Log.d(TAG, "getUserHuntList request called");
+
         String userName = mLocalStorage.fetchUsername();
 
         Query query = mDatabaseReference.child(USER_NAME_KEY).child(userName);
 
-        final ArrayList<ScavengerHunt> places = new ArrayList();
-
-
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<ScavengerHunt> places = new ArrayList();
+
+                Log.d(TAG, "getUserHuntList callback " + dataSnapshot);
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
@@ -98,7 +102,7 @@ public class Firebase  {
 
                 }
 
-                callback.huntList(places);
+                callback.huntList(places);   //this is an arraylist of size 1 ?
 
 
             }
@@ -124,6 +128,7 @@ public class Firebase  {
 
         public void huntnameList(ArrayList<ScavengerHunt> huntNames);
     }
+
 
     public void getAllScavengerLists(final huntListnames callback) {
 
