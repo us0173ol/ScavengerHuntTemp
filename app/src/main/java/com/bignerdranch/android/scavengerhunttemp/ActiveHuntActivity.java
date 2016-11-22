@@ -42,7 +42,7 @@ import java.util.Set;
 
 public class ActiveHuntActivity extends ListActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>, Firebase.GeoFenceEventCallback {
+        ResultCallback<Status>, Firebase.GeoFenceEventCallback, Firebase.getUserHuntList {
 
     Firebase mFirebase;
     GoogleApiClient mGoogleApiClient;
@@ -90,9 +90,6 @@ public class ActiveHuntActivity extends ListActivity implements
     String mScoreTextCombined; // This is the score for the User's textview, it allows it to be modified on the fly.
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,18 +108,24 @@ public class ActiveHuntActivity extends ListActivity implements
         mUserHuntInfo = new HashMap();
         mUserPlaceData = new ArrayList<Item>();
 
-
-
         Intent intent = getIntent();
 
-
         mUserHuntInfo = (HashMap) intent.getSerializableExtra("hashMap");
+
+        // Get firebase data here so you can add a callback to THIS class.
+        // Right now, when your Scavenger Hunt updates in firebase,
+        // for example when you trip a geofence, MainActivity gets the callback. Which is no use to this Activity.
+
+        mFirebase.getUserHunts(this);  //get this user's current hunt
+
 
         for (Object key : mUserHuntInfo.keySet()) {
 
             mHuntName = key.toString();
 
         }
+
+
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -132,19 +135,29 @@ public class ActiveHuntActivity extends ListActivity implements
                     .build();
         }
 
-        mFirebase.beNotifiedOfGeoFenceEvents(this);
 
-        // This section sets up the Listview for the activity.
-        Set keys = mUserHuntInfo.keySet();
+        setupView();
 
-        for(Iterator i = keys.iterator(); i.hasNext();) {
-
-            String kEy = (String) i.next();
+    }
 
 
-            ArrayList<Item> value = (ArrayList<Item>) mUserHuntInfo.get(kEy);
+    //Callback from firebase.getUserHunts()
 
-            for (Item item : value) {
+    @Override
+    public void huntList(ArrayList<ScavengerHunt> huntNames) {
+
+        Log.d(TAG, "callback from firebase " + huntNames);
+
+        //an arraylist of size 1, right? with the user's current hunt?
+        ScavengerHunt hunt = huntNames.get(0);
+
+
+        mUserPlaceData.clear();
+        mUserScore = 0;
+
+        mHuntName = hunt.getHuntName();
+
+        for (Item item : hunt.getPlaces()) {
 
                 tag = item.getPlaceName();
 
@@ -158,21 +171,23 @@ public class ActiveHuntActivity extends ListActivity implements
 
                 mUserPlaceData.add(item);
 
-            }
 
             mUserMaxScore = mUserPlaceData.size();
             if (mUserScore == mUserMaxScore){
                 Toast.makeText(this, "You've completed the hunt!!", Toast.LENGTH_LONG).show();
 
-//                mFirebase.deleteUserHunt();
-//                mLocalStorage.writeUserHunt(null);
-//                setResult(RESULT_OK);
-//                finish();
+                //                mFirebase.deleteUserHunt();
+                //                mLocalStorage.writeUserHunt(null);
+                //                setResult(RESULT_OK);
+                //                finish();
 
             }
 
-        }
 
+            mFirebase.beNotifiedOfGeoFenceEvents(this);
+
+
+        }
 
 
         ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
@@ -181,6 +196,14 @@ public class ActiveHuntActivity extends ListActivity implements
         mScoreTextCombined = scoreText + mUserScore;
 
         mUserScoreViewer.setText(mScoreTextCombined);
+
+
+
+    }
+
+    private void setupView() {
+
+        // This section sets up the Listview for the activity.
 
 
 
@@ -238,11 +261,7 @@ public class ActiveHuntActivity extends ListActivity implements
                                 startActivity(mapIntent);
 
                             }
-
-
                         }
-
-
                     }
                 }
             }
@@ -261,32 +280,30 @@ public class ActiveHuntActivity extends ListActivity implements
             }
         });
 
+
+    }
+
+    @Override
+    public void onConnected (@Nullable Bundle bundle){
+        Log.d(TAG, "onConnected");
+        configureGeoFence();
     }
 
 
+    //Callback for GoogleApiClient
+    @Override
+    public void onConnectionSuspended ( int i){
+        Log.d(TAG, "onConnectionSuspended" + i);
+    }
+
+    //Callback for GoogleApiClient
+    @Override
+    public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
+        Log.d(TAG, "onConnectionFailed " + connectionResult);
+    }
 
 
-        @Override
-        public void onConnected (@Nullable Bundle bundle){
-            Log.d(TAG, "onConnected");
-            configureGeoFence();
-        }
-
-
-        //Callback for GoogleApiClient
-        @Override
-        public void onConnectionSuspended ( int i){
-            Log.d(TAG, "onConnectionSuspended" + i);
-        }
-
-        //Callback for GoogleApiClient
-        @Override
-        public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
-            Log.d(TAG, "onConnectionFailed " + connectionResult);
-        }
-
-
-        // Connect and disconnect from GoogleAPIClient as app starts and stops.
+    // Connect and disconnect from GoogleAPIClient as app starts and stops.
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -300,7 +317,9 @@ public class ActiveHuntActivity extends ListActivity implements
 
     // Configures the Geofence, it will do this for multiple locations.
 
-    private void configureGeoFence() {//(double lat, double lon, float radius, String tag)
+    private void configureGeoFence() {
+
+        //(double lat, double lon, float radius, String tag)
         //Create a new GeoFence. Configure the GeoFence using a Builder. See documentation for setting options
         //Can create many GeoFences, differentiate by the requestId String. The lat+lon could be replaced with user input.
 
@@ -363,7 +382,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
                 if (permission == PackageManager.PERMISSION_GRANTED) {
 
-                    //If we have permission, request Locationservices monitors this GeoFence.
+                    //If we have permission, request LocationServices monitors this GeoFence.
 
                     //And then can add the GeoFence to location services. Provide the details of the GeoFence and the pending intent
                     //LocationServices will invoke the PendingIntent if the device enters the GeoFence.
@@ -388,16 +407,11 @@ public class ActiveHuntActivity extends ListActivity implements
                     ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
 
                 }
-
-
-
             }
 
             Log.d(TAG, kEy + " = " + value);
 
         }
-
-
 
 
     }
@@ -435,7 +449,6 @@ public class ActiveHuntActivity extends ListActivity implements
                 configureGeoFence();
             }
         }
-
     }
 
 
@@ -447,6 +460,7 @@ public class ActiveHuntActivity extends ListActivity implements
 
 
     }
+
 
 
 }
