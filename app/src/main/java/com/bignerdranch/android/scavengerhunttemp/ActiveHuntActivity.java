@@ -146,8 +146,6 @@ public class ActiveHuntActivity extends ListActivity implements
     @Override
     public void huntList(ArrayList<ScavengerHunt> huntNames) {
 
-        //TODO this is killing the program at the moment, fix it!
-
         if (huntNames.size() == 0) {
 
             System.out.println("no user list found");
