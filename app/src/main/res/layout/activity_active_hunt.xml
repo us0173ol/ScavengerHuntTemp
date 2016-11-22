@@ -29,12 +29,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="wrap_content"
         android:id="@+id/hunt_footer"
         android:layout_alignParentBottom="true">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_hunt_score"
+            android:textSize="16sp"
+            android:layout_toRightOf="@+id/delete_hunt"/>
+
         <Button
-            android:text="Delete Hunt"
+            android:text="Give Up Hunt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/delete_hunt"
@@ -52,9 +59,18 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/hunt_header"
-        android:layout_height="75dp"
+        android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_below="@+id/hunt_title">
+
+        <TextView
+            android:text="These are the places to find. For every place found you get a point. If the item is checked you have found that location."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_hunt_instructions"
+            android:layout_toRightOf="@+id/user_hunt_score"
+            android:layout_below="@+id/user_hunt_score"/>
 
     </RelativeLayout>
 

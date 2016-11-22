@@ -43,6 +43,7 @@ public class GeoFenceService extends IntentService {
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
+
         Log.d(TAG, "Geofence event received");
 
         //todo check for errors

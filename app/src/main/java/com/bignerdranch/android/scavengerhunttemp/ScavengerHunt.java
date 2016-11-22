@@ -72,4 +72,5 @@ public class ScavengerHunt implements Parcelable {
         parcel.writeString(huntName);
         parcel.writeTypedList(places);
     }
+
 }
