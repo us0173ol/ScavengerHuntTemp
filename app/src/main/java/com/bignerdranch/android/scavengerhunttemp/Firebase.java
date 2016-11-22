@@ -293,16 +293,16 @@ public class Firebase  {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayList<ScavengerHunt> messages = new ArrayList<ScavengerHunt>();
+               // ArrayList<ScavengerHunt> messages = new ArrayList<ScavengerHunt>();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    messages.add(ds.getValue(ScavengerHunt.class));
+                   // messages.add(ds.getValue(ScavengerHunt.class));
 
 
                 }
 
-                callback.newGeoFenceEventMessages(messages);
+               // callback.newGeoFenceEventMessages(messages);
             }
 
             @Override

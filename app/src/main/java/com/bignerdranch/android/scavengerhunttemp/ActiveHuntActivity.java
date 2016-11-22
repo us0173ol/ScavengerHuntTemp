@@ -83,9 +83,11 @@ public class ActiveHuntActivity extends ListActivity implements
     double lon;
     String found;
 
-    int mUserScore;
+    int mUserScore; // current score
 
-    int mUserMaxScore;
+    int mUserMaxScore; // max score
+
+    String mScoreTextCombined; // This is the score for the User's textview, it allows it to be modified on the fly.
 
 
 
@@ -159,13 +161,17 @@ public class ActiveHuntActivity extends ListActivity implements
 
             }
 
+            mUserMaxScore = mUserPlaceData.size();
+
         }
 
 
         ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
         setListAdapter(adapter); // Listview with checkboxes.
 
-        mUserScoreViewer.setText(scoreText + mUserScore);
+        mScoreTextCombined = scoreText + mUserScore;
+
+        mUserScoreViewer.setText(mScoreTextCombined);
 
 
 
