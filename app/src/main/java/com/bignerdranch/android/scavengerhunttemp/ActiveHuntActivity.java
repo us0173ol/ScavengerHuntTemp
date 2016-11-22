@@ -148,18 +148,24 @@ public class ActiveHuntActivity extends ListActivity implements
 
         //TODO this is killing the program at the moment, fix it!
 
-        Log.d(TAG, "callback from firebase " + huntNames);
+        if (huntNames.size() == 0) {
 
-        //an arraylist of size 1, right? with the user's current hunt?
-        ScavengerHunt hunt = huntNames.get(0);
+            System.out.println("no user list found");
+
+        } else {
+
+            Log.d(TAG, "callback from firebase " + huntNames);
+
+            //an arraylist of size 1, right? with the user's current hunt?
+            ScavengerHunt hunt = huntNames.get(0);
 
 
-        mUserPlaceData.clear();
-        mUserScore = 0;
+            mUserPlaceData.clear();
+            mUserScore = 0;
 
-        mHuntName = hunt.getHuntName();
+            mHuntName = hunt.getHuntName();
 
-        for (Item item : hunt.getPlaces()) {
+            for (Item item : hunt.getPlaces()) {
 
                 tag = item.getPlaceName();
 
@@ -174,33 +180,33 @@ public class ActiveHuntActivity extends ListActivity implements
                 mUserPlaceData.add(item);
 
 
-            mUserMaxScore = mUserPlaceData.size();
-            if (mUserScore == mUserMaxScore){
-                Toast.makeText(this, "You've completed the hunt!!", Toast.LENGTH_LONG).show();
+                mUserMaxScore = mUserPlaceData.size();
+                if (mUserScore == mUserMaxScore) {
+                    Toast.makeText(this, "You've completed the hunt!!", Toast.LENGTH_LONG).show();
 
-                //                mFirebase.deleteUserHunt();
-                //                mLocalStorage.writeUserHunt(null);
-                //                setResult(RESULT_OK);
-                //                finish();
+                    //                mFirebase.deleteUserHunt();
+                    //                mLocalStorage.writeUserHunt(null);
+                    //                setResult(RESULT_OK);
+                    //                finish();
+
+                }
+
+
+                mFirebase.beNotifiedOfGeoFenceEvents(this);
+
 
             }
 
 
-            mFirebase.beNotifiedOfGeoFenceEvents(this);
+            ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
+            setListAdapter(adapter); // Listview with checkboxes.
+
+            mScoreTextCombined = scoreText + mUserScore;
+
+            mUserScoreViewer.setText(mScoreTextCombined);
 
 
         }
-
-
-        ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
-        setListAdapter(adapter); // Listview with checkboxes.
-
-        mScoreTextCombined = scoreText + mUserScore;
-
-        mUserScoreViewer.setText(mScoreTextCombined);
-
-
-
     }
 
     private void setupView() {
