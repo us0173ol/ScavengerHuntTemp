@@ -39,7 +39,7 @@ public class Firebase  {
 
     private static final String Scavenger_Lists_Key = "scavenger_hunts";
     private static final String USER_NAME_KEY = "user_names";
-    private static final String LIST_TAG = "ckascbk";
+    private static final String LIST_TAG = "FIREBASE_LIST";   //more descriptive name
 
     private String mUserHuntKey;
 
