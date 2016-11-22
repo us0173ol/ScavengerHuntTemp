@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -60,6 +61,7 @@ public class ActiveHuntActivity extends ListActivity implements
     ListView mUserListView;
     Button mUserDeleteButton;
     Button mUserCheatButton;
+    TextView mUserScoreViewer;
 
 
     private ArrayList<Item> mUserPlaceData;
@@ -68,6 +70,8 @@ public class ActiveHuntActivity extends ListActivity implements
     int isFound;
     private String userSelection;
     private String userSelectionName; // For cheating purposes.
+
+    private String scoreText = "Your current score is: ";
 
     private ArrayList mUserAllLocations;
 
@@ -96,6 +100,7 @@ public class ActiveHuntActivity extends ListActivity implements
         mUserListView.setChoiceMode(mUserListView.CHOICE_MODE_MULTIPLE);
         mUserDeleteButton = (Button) findViewById(R.id.delete_hunt);
         mUserCheatButton = (Button) findViewById(R.id.cheat_button);
+        mUserScoreViewer = (TextView) findViewById(R.id.user_hunt_score);
 
 
         mLocalStorage = new LocalStorage(this);
@@ -157,12 +162,10 @@ public class ActiveHuntActivity extends ListActivity implements
         }
 
 
-
-
         ActiveHuntListViewAdapter adapter = new ActiveHuntListViewAdapter(this, android.R.layout.simple_list_item_checked, mUserPlaceData);
         setListAdapter(adapter); // Listview with checkboxes.
 
-
+        mUserScoreViewer.setText(scoreText + mUserScore);
 
 
 
@@ -388,6 +391,9 @@ public class ActiveHuntActivity extends ListActivity implements
     public void onBackPressed() {
         super.onBackPressed();
 
+        setResult(RESULT_OK);
+        finish();
+
 
     }
 
@@ -421,12 +427,8 @@ public class ActiveHuntActivity extends ListActivity implements
     @Override
     public void newGeoFenceEventMessages(ArrayList<ScavengerHunt> messages) {
 
-        for (ScavengerHunt message : messages) {
+        // Figure out a way to update score from here.
 
-            //real app - do something more useful
-            //Toast.makeText(this, , Toast.LENGTH_LONG).show();
-            Log.d(TAG, "THIS IS THE GEOFENCE EVENT MESSAGES" + message.toString());
-        }
 
     }
 

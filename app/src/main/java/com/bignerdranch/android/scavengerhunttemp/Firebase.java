@@ -276,7 +276,7 @@ public class Firebase  {
     }
 
 
-    public void addGeoFenceEvent(String event) { mDatabaseReference.push().setValue(event);}
+    public void addGeoFenceEvent(String event) { Log.d(TAG, "Location found" + event);}
 
     interface GeoFenceEventCallback  {
         public void newGeoFenceEventMessages(ArrayList<ScavengerHunt> messages);
@@ -284,7 +284,7 @@ public class Firebase  {
 
     public void beNotifiedOfGeoFenceEvents(final GeoFenceEventCallback callback) {
 
-        Query allEvents = mDatabaseReference;    //get all the data. TODO real app will probably filter somehow.
+        Query allEvents = mDatabaseReference.child(USER_NAME_KEY).child(mLocalStorage.fetchUsername());    //get all the data. TODO real app will probably filter somehow.
 
         allEvents.addValueEventListener(new ValueEventListener() {
 
@@ -297,12 +297,12 @@ public class Firebase  {
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    //messages.add(ds.getValue(ScavengerHunt.class));
-                    Log.d(TAG, ds.toString());
+                    messages.add(ds.getValue(ScavengerHunt.class));
+
 
                 }
 
-                //callback.newGeoFenceEventMessages(messages);
+                callback.newGeoFenceEventMessages(messages);
             }
 
             @Override

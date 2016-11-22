@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements
         mUserName = mLocalStorage.fetchUsername(); // Gets the User name from Local Storage
 
 
+        //mLocalStorage.writeUserHunt(null);
 
         // If one doesn't exist this will create it.
         if (mUserName == null) {
@@ -236,9 +237,17 @@ public class MainActivity extends AppCompatActivity implements
 
         mLocalStorage = new LocalStorage(this);
 
-        if (resultCode == RESULT_OK) {
+
+        if (requestCode == ACTIVE_HUNT_CODE && resultCode == RESULT_OK) {
 
             mFirebase.getAllScavengerLists(MainActivity.this);
+            mFirebase.getUserHunts(MainActivity.this);
+
+            if (mHuntList.size() == 0) {
+
+                mLocalStorage.writeUserHunt(null);
+
+            }
         }
 
 
