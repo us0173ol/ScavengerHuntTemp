@@ -146,6 +146,8 @@ public class ActiveHuntActivity extends ListActivity implements
     @Override
     public void huntList(ArrayList<ScavengerHunt> huntNames) {
 
+        //TODO this is killing the program at the moment, fix it!
+
         Log.d(TAG, "callback from firebase " + huntNames);
 
         //an arraylist of size 1, right? with the user's current hunt?
